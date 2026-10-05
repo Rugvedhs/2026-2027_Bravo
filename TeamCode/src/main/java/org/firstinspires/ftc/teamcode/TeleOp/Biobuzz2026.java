@@ -10,21 +10,18 @@ import org.firstinspires.ftc.teamcode.Core.FlyWheels;
 import org.firstinspires.ftc.teamcode.Core.FrontIntake;
 import org.firstinspires.ftc.teamcode.Core.LauncherWheel;
 
-
-@TeleOp(name="Decode2025", group="TeleOp")
-public class Decode2025 extends LinearOpMode {
+@TeleOp(name="Biobuzz2026", group="TeleOp")
+public class Biobuzz2026 extends LinearOpMode {
 
     public DriveTrain driveTrain;
     public LauncherWheel launcherWheel;
     public FlyWheels flyWheels;
     public FrontIntake frontIntake;
 
-    private static final float STICK_DEADZONE = 0.08f;
     private long yPressedTime = 0;
 
     @Override
     public void runOpMode() {
-
         driveTrain = new DriveTrain(
                 hardwareMap,
                 "leftFront", "leftBack",
@@ -33,11 +30,9 @@ public class Decode2025 extends LinearOpMode {
         launcherWheel = new LauncherWheel(
                 hardwareMap.get(DcMotor.class, "LauncherWheel")
         );
-
         frontIntake = new FrontIntake(
                 hardwareMap.get(DcMotor.class, "FrontIntake")
         );
-
         flyWheels = new FlyWheels(
                 hardwareMap.get(DcMotorEx.class, "leftFly"),
                 hardwareMap.get(DcMotorEx.class, "rightFly")
@@ -53,45 +48,7 @@ public class Decode2025 extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            // testing for PIDF values
-            if(gamepad1.xWasPressed()){
-                flyWheels.changeHighVelocity(10);
-            }
-
-            if(gamepad1.yWasPressed()){
-                flyWheels.toggleVelocities();
-                flyWheels.updateFlywheelChanges(telemetry);
-            }
-
-            if(gamepad1.bWasPressed()){
-                flyWheels.changeStepIndex();
-                flyWheels.updateFlywheelChanges(telemetry);
-            }
-
-            if(gamepad1.dpadLeftWasPressed()){
-                flyWheels.incrF();
-                flyWheels.updateFlywheelChanges(telemetry);
-            }
-
-            if(gamepad1.dpadRightWasPressed()){
-                flyWheels.decrF();
-                flyWheels.updateFlywheelChanges(telemetry);
-            }
-
-            if(gamepad1.dpadUpWasPressed()){
-                flyWheels.incrP();
-                flyWheels.updateFlywheelChanges(telemetry);
-            }
-
-            if(gamepad1.dpadDownWasPressed()){
-                flyWheels.decrP();
-                flyWheels.updateFlywheelChanges(telemetry);
-            }
-
             driveTrain.Drive(gamepad1);
-
-            float leftStick  = applyDeadzone(gamepad2.left_stick_y, STICK_DEADZONE);
-            float rightStick = applyDeadzone(gamepad2.right_stick_y, STICK_DEADZONE);
 
             boolean overrideAll = gamepad2.y;
             boolean shootPressed = gamepad2.a;
@@ -126,12 +83,6 @@ public class Decode2025 extends LinearOpMode {
 
             telemetry.update();
             flyWheels.getVelocityAndError(telemetry);
-            flyWheels.publishTelemetry(telemetry);
-
         }
-    }
-
-    private float applyDeadzone(float val, float dz) {
-        return Math.abs(val) < dz ? 0.0f : val;
     }
 }

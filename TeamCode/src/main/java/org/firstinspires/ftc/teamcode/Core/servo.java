@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeleOp;
+package org.firstinspires.ftc.teamcode.Core;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -18,14 +18,5 @@ public class servo extends OpMode{
     public void loop()
     {
         servo.setPower(-1.0);
-
-
-//        while (gamepad1.a) {
-//            servo.setPower(1.0);
-//        }
-//        while (gamepad1.b){
-//            servo.setPower(-1.0);
-//        }
-//        servo.setPower(0.0);
     }
 }

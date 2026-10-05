@@ -76,14 +76,6 @@ public class AprilTagTestRed extends LinearOpMode {
 
             telemetry.addData("Detected Tag", detectedTag);
             telemetry.update();
-
-            if (detectedTag == 21) {
-                new AprilTag21Blue().run(this);
-            } else if (detectedTag == 22) {
-                new AprilTag22Blue().run(this);
-            } else {
-                new AprilTag23Blue().run(this);
-            }
         }
 
         limelight.stop();

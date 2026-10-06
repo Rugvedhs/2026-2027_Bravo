@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
-import androidx.annotation.NonNull;
-
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.SequentialAction;
@@ -10,10 +7,9 @@ import com.acmerobotics.roadrunner.Vector2d;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.MecanumDrive;
+import org.firstinspires.ftc.teamcode.Stuff.MecanumDrive;
 
 @Autonomous(name = "RedOdometryAuto")
 public class RedOdometryAuto extends LinearOpMode {
@@ -78,8 +74,8 @@ public class RedOdometryAuto extends LinearOpMode {
     public Action shootFrontIntake() {
         return packet -> {
             launcherWheel.setPower(-1.0);
-            leftFlyWheel.setPower(-5);
-            rightFlyWheel.setPower(5);
+            leftFlyWheel.setPower(-0.7);
+            rightFlyWheel.setPower(0.7);
             frontIntake.setPower(-1.0);
             return false;
         };
@@ -102,8 +98,8 @@ public class RedOdometryAuto extends LinearOpMode {
     public Action activateFlyWheels()
     {
         return packet -> {
-            leftFlyWheel.setPower(-5);
-            rightFlyWheel.setPower(5);
+            leftFlyWheel.setPower(-0.7);
+            rightFlyWheel.setPower(0.7);
             return false;
         };
     }

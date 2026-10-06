@@ -19,8 +19,10 @@ public class BackBottom {
     }
 
     public void init() {
-        backBottom.setDirection(DcMotorSimple.Direction.REVERSE);
-        backBottom.setPower(0.0);
+        if (backBottom != null) {
+            backBottom.setDirection(DcMotorSimple.Direction.REVERSE);
+            backBottom.setPower(0.0);
+        }
     }
 
     public void update(int beltsMode,
@@ -28,57 +30,29 @@ public class BackBottom {
                        boolean override,
                        boolean frontIntakeActive,
                        boolean aPressed) {
+        if (backBottom == null) return;
 
-//        if (frontIntakeActive) {
-//            // Match belts direction but very slowly
-//            if (beltsMode == 1) {
-//                backBottom.setPower(-FRONT_INTAKE_POWER);
-//            } else if (beltsMode == 2) {
-//                backBottom.setPower(FRONT_INTAKE_POWER);
-//            } else {
-//                backBottom.setPower(0.0);
-//            }
-//            return;
-//        }
-
-        // Override (Y button)
         if (override) {
             backBottom.setPower(-1.0);
             return;
-        }
-        else {
-            backBottom.setPower(0.0);
         }
 
         if (aPressed) {
             backBottom.setPower(-POWER);
             return;
         }
-        else {
-            backBottom.setPower(0.0);
-        }
 
-        // Stick control
         if (Math.abs(leftStickY) >= DEADZONE) {
             backBottom.setPower(leftStickY > 0 ? POWER : -POWER);
             return;
         }
 
-        // Belts fallback
-//        switch (beltsMode) {
-//            case 1:
-//                backBottom.setPower(-POWER);
-//                break;
-//            case 2:
-//                backBottom.setPower(POWER);
-//                break;
-//            default:
-//                backBottom.setPower(0.0);
-//                break;
-//        }
+        backBottom.setPower(0.0);
     }
 
     public void stop() {
-        backBottom.setPower(0.0);
+        if (backBottom != null) {
+            backBottom.setPower(0.0);
+        }
     }
 }

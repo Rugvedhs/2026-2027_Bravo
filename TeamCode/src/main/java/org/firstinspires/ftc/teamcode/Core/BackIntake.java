@@ -14,43 +14,25 @@ public class BackIntake {
     }
 
     public void init() {
-        backIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-        backIntake.setPower(0.0);
+        if (backIntake != null) {
+            backIntake.setDirection(DcMotorSimple.Direction.FORWARD);
+            backIntake.setPower(0.0);
+        }
     }
 
-    /**
-     * Priority:
-     * 1) aPressed -> full power while held (immediate)
-     * 2) override -> full power (next)
-     * 3) beltsMode != 0 -> slow belts behavior (optional)
-     * 4) stick -> full POWER
-     */
     public void update(float leftStickY, boolean override, int beltsMode, boolean aPressed) {
+        if (backIntake == null) return;
 
-        // 1) A button hold should immediately run the intake and return
         if (aPressed) {
-            backIntake.setPower(-POWER); // kept same sign as before
+            backIntake.setPower(-POWER);
             return;
         }
 
-        // 2) Override (Y) has next priority
         if (override) {
             backIntake.setPower(-POWER);
             return;
         }
 
-        // (Optional) belts slow behavior if you want belts to drive the back intake slowly:
-        /*
-        if (beltsMode == 1) {
-            backIntake.setPower(-BELTS_SLOW_POWER);
-            return;
-        } else if (beltsMode == 2) {
-            backIntake.setPower(BELTS_SLOW_POWER);
-            return;
-        }
-        */
-
-        // 3) Stick control
         if (Math.abs(leftStickY) < DEADZONE) {
             backIntake.setPower(0.0);
             return;
@@ -59,6 +41,8 @@ public class BackIntake {
     }
 
     public void stop() {
-        backIntake.setPower(0.0);
+        if (backIntake != null) {
+            backIntake.setPower(0.0);
+        }
     }
 }

@@ -14,16 +14,14 @@ public class FrontIntake {
     }
 
     public void init() {
-        frontIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-        frontIntake.setPower(0.0);
+        if (frontIntake != null) {
+            frontIntake.setDirection(DcMotorSimple.Direction.FORWARD);
+            frontIntake.setPower(0.0);
+        }
     }
 
-    /**
-     * mode == 1 -> power = +1.0
-     * mode == 2 -> power = -1.0
-     * mode == 0 -> power = 0.0
-     */
     public void update(float rightStickY, boolean aPressed) {
+        if (frontIntake == null) return;
         if (rightStickY < 0.0f) {
             frontIntake.setPower(1.0);
         } else if (rightStickY > 0.0f) {
@@ -32,19 +30,14 @@ public class FrontIntake {
             frontIntake.setPower(0.0);
         }
 
-
         if (aPressed) {
             frontIntake.setPower(1.0);
         }
-
-
     }
 
-//    public boolean isActive(int beltsMode) {
-//        return beltsMode == 1 || beltsMode == 2;
-//    }
-
     public void stop() {
-        frontIntake.setPower(0.0);
+        if (frontIntake != null) {
+            frontIntake.setPower(0.0);
+        }
     }
 }

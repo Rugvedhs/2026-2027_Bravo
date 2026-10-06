@@ -33,17 +33,18 @@ public class FlyWheels {
     }
 
     public void init() {
-        leftFly.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFly.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        leftFly.setMode(RunMode.RUN_USING_ENCODER);
-        rightFly.setMode(RunMode.RUN_USING_ENCODER);
-
-        leftFly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        rightFly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        leftFly.setPower(0.0);
-        rightFly.setPower(0.0);
+        if (leftFly != null) {
+            leftFly.setDirection(DcMotorSimple.Direction.FORWARD);
+            leftFly.setMode(RunMode.RUN_USING_ENCODER);
+            leftFly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            leftFly.setPower(0.0);
+        }
+        if (rightFly != null) {
+            rightFly.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightFly.setMode(RunMode.RUN_USING_ENCODER);
+            rightFly.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            rightFly.setPower(0.0);
+        }
     }
 
     public void update(boolean rightBumper, boolean leftBumper, boolean xPressed, boolean overrideY) {
@@ -66,24 +67,24 @@ public class FlyWheels {
     }
 
     public void motorSpinOut(){
-        leftFly.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFly.setDirection(DcMotorSimple.Direction.FORWARD);
+        if (leftFly != null) leftFly.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (rightFly != null) rightFly.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void motorSpinIn(){
-        leftFly.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFly.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (leftFly != null) leftFly.setDirection(DcMotorSimple.Direction.FORWARD);
+        if (rightFly != null) rightFly.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
     public void spinTargetRPM(){
         double ticksPerSec = rpmToTicks(currTargetRPM);
-        leftFly.setVelocity(ticksPerSec);
-        rightFly.setVelocity(ticksPerSec);
+        if (leftFly != null) leftFly.setVelocity(ticksPerSec);
+        if (rightFly != null) rightFly.setVelocity(ticksPerSec);
     }
 
     public void stop() {
-        leftFly.setPower(0.0);
-        rightFly.setPower(0.0);
+        if (leftFly != null) leftFly.setPower(0.0);
+        if (rightFly != null) rightFly.setPower(0.0);
     }
 
     private double rpmToTicks(double rpm){
@@ -140,7 +141,9 @@ public class FlyWheels {
     }
 
     public void getVelocityAndError(Telemetry telemetry){
-        double currVelocity = (leftFly.getVelocity() + Math.abs(rightFly.getVelocity())) / 2;
+        double leftVel = leftFly != null ? leftFly.getVelocity() : 0.0;
+        double rightVel = rightFly != null ? rightFly.getVelocity() : 0.0;
+        double currVelocity = (leftVel + Math.abs(rightVel)) / 2;
         double targetVelocity = rpmToTicks(currTargetRPM);
 
         telemetry.addData("Current Velocity", "%.1f", currVelocity);

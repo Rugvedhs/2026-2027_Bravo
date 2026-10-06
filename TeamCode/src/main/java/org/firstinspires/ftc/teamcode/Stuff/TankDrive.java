@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Stuff;
 
 import androidx.annotation.NonNull;
 
@@ -176,7 +176,9 @@ public final class TankDrive {
             for (Encoder e : leftEncs) {
                 PositionVelocityPair p = e.getPositionAndVelocity();
                 meanLeftPos += p.position;
-                meanLeftVel += p.velocity;
+                if (p.velocity != null) {
+                    meanLeftVel += p.velocity;
+                }
                 leftReadings.add(p);
             }
             meanLeftPos /= leftEncs.size();
@@ -186,7 +188,9 @@ public final class TankDrive {
             for (Encoder e : rightEncs) {
                 PositionVelocityPair p = e.getPositionAndVelocity();
                 meanRightPos += p.position;
-                meanRightVel += p.velocity;
+                if (p.velocity != null) {
+                    meanRightVel += p.velocity;
+                }
                 rightReadings.add(p);
             }
             meanRightPos /= rightEncs.size();

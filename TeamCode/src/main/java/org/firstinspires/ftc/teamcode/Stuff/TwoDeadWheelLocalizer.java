@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Stuff;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
@@ -116,15 +116,18 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         int perpPosDelta = perpPosVel.position - lastPerpPos;
         double headingDelta = heading.minus(lastHeading);
 
+        double parVel = parPosVel.velocity != null ? parPosVel.velocity : 0.0;
+        double perpVel = perpPosVel.velocity != null ? perpPosVel.velocity : 0.0;
+
         Twist2dDual<Time> twist = new Twist2dDual<>(
                 new Vector2dDual<>(
                         new DualNum<Time>(new double[] {
                                 parPosDelta - PARAMS.parYTicks * headingDelta,
-                                parPosVel.velocity - PARAMS.parYTicks * headingVel,
+                                parVel - PARAMS.parYTicks * headingVel,
                         }).times(inPerTick),
                         new DualNum<Time>(new double[] {
                                 perpPosDelta - PARAMS.perpXTicks * headingDelta,
-                                perpPosVel.velocity - PARAMS.perpXTicks * headingVel,
+                                perpVel - PARAMS.perpXTicks * headingVel,
                         }).times(inPerTick)
                 ),
                 new DualNum<>(new double[] {

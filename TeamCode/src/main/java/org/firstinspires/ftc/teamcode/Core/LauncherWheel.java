@@ -16,12 +16,15 @@ public class LauncherWheel {
     }
 
     public void init() {
-        launcherWheel.setDirection(DcMotorSimple.Direction.FORWARD);
-        launcherWheel.setPower(0.0);
+        if (launcherWheel != null) {
+            launcherWheel.setDirection(DcMotorSimple.Direction.FORWARD);
+            launcherWheel.setPower(0.0);
+        }
     }
 
     // UPDATED METHOD
     public void update(boolean bPressed, boolean override, boolean aPressed) {
+        if (launcherWheel == null) return;
 
         // 1) Maintain toggle state for B (edge detection)
         if (bPressed && !lastBPressed) {
@@ -47,11 +50,15 @@ public class LauncherWheel {
 
     public void stop() {
         toggledB = false;
-        launcherWheel.setPower(0.0);
+        if (launcherWheel != null) {
+            launcherWheel.setPower(0.0);
+        }
     }
 
     public void setPower(double level){
-        launcherWheel.setPower(level);
+        if (launcherWheel != null) {
+            launcherWheel.setPower(level);
+        }
     }
 
 

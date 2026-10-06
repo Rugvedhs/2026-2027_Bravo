@@ -129,10 +129,10 @@ public class DriveTrain
 
     protected void setDirection(DcMotor.Direction direction)
     {
-        MotorfL.setDirection(direction);
-        MotorbL.setDirection(direction);
-        MotorfR.setDirection(direction);
-        MotorbR.setDirection(direction);
+        if (MotorfL != null) MotorfL.setDirection(direction);
+        if (MotorbL != null) MotorbL.setDirection(direction);
+        if (MotorfR != null) MotorfR.setDirection(direction);
+        if (MotorbR != null) MotorbR.setDirection(direction);
     }
 
     /**
@@ -172,72 +172,75 @@ public class DriveTrain
 
     public void setPower(double power)
     {
-        MotorfL.setPower(power * MOTOR_fL_MODIFIER);
-        MotorbL.setPower(power * MOTOR_bL_MODIFIER);
-        MotorfR.setPower(power * MOTOR_fR_MODIFIER);
-        MotorbR.setPower(power * MOTOR_bR_MODIFIER);
+        if (MotorfL != null) MotorfL.setPower(power * MOTOR_fL_MODIFIER);
+        if (MotorbL != null) MotorbL.setPower(power * MOTOR_bL_MODIFIER);
+        if (MotorfR != null) MotorfR.setPower(power * MOTOR_fR_MODIFIER);
+        if (MotorbR != null) MotorbR.setPower(power * MOTOR_bR_MODIFIER);
     }
 
     protected void setPowerFL(double power)
     {
-        MotorfL.setPower(power * MOTOR_fL_MODIFIER);
+        if (MotorfL != null) MotorfL.setPower(power * MOTOR_fL_MODIFIER);
     }
 
     protected void setPowerBL(double power)
     {
-        MotorbL.setPower(power * MOTOR_bL_MODIFIER);
+        if (MotorbL != null) MotorbL.setPower(power * MOTOR_bL_MODIFIER);
     }
 
     protected void setPowerFR(double power)
     {
-        MotorfR.setPower(power * MOTOR_fR_MODIFIER);
+        if (MotorfR != null) MotorfR.setPower(power * MOTOR_fR_MODIFIER);
     }
 
     protected void setPowerBR(double power)
     {
-        MotorbR.setPower(power * MOTOR_bR_MODIFIER);
+        if (MotorbR != null) MotorbR.setPower(power * MOTOR_bR_MODIFIER);
     }
 
     public void setMode(DcMotor.RunMode mode)
     {
-        MotorfL.setMode(mode);
-        MotorbL.setMode(mode);
-        MotorfR.setMode(mode);
-        MotorbR.setMode(mode);
+        if (MotorfL != null) MotorfL.setMode(mode);
+        if (MotorbL != null) MotorbL.setMode(mode);
+        if (MotorfR != null) MotorfR.setMode(mode);
+        if (MotorbR != null) MotorbR.setMode(mode);
     }
 
     public void setTargetPosition(int ticks)
     {
-        MotorfL.setTargetPosition(ticks);
-        MotorbL.setTargetPosition(ticks);
-        MotorfR.setTargetPosition(ticks);
-        MotorbR.setTargetPosition(ticks);
+        if (MotorfL != null) MotorfL.setTargetPosition(ticks);
+        if (MotorbL != null) MotorbL.setTargetPosition(ticks);
+        if (MotorfR != null) MotorfR.setTargetPosition(ticks);
+        if (MotorbR != null) MotorbR.setTargetPosition(ticks);
     }
 
     public boolean isBusy()
     {
-        return MotorfL.isBusy() || MotorbL.isBusy() || MotorfR.isBusy() || MotorbR.isBusy();
+        return (MotorfL != null && MotorfL.isBusy()) ||
+               (MotorbL != null && MotorbL.isBusy()) ||
+               (MotorfR != null && MotorfR.isBusy()) ||
+               (MotorbR != null && MotorbR.isBusy());
     }
 
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior)
     {
-        MotorfL.setZeroPowerBehavior(behavior);
-        MotorbL.setZeroPowerBehavior(behavior);
-        MotorfR.setZeroPowerBehavior(behavior);
-        MotorbR.setZeroPowerBehavior(behavior);
+        if (MotorfL != null) MotorfL.setZeroPowerBehavior(behavior);
+        if (MotorbL != null) MotorbL.setZeroPowerBehavior(behavior);
+        if (MotorfR != null) MotorfR.setZeroPowerBehavior(behavior);
+        if (MotorbR != null) MotorbR.setZeroPowerBehavior(behavior);
     }
 
     // Positions
-    public int getMotorFLPosition() { return MotorfL.getCurrentPosition(); }
-    public int getMotorFRPosition() { return MotorfR.getCurrentPosition(); }
-    public int getMotorBLPosition() { return MotorbL.getCurrentPosition(); }
-    public int getMotorBRPosition() { return MotorbR.getCurrentPosition(); }
+    public int getMotorFLPosition() { return MotorfL != null ? MotorfL.getCurrentPosition() : 0; }
+    public int getMotorFRPosition() { return MotorfR != null ? MotorfR.getCurrentPosition() : 0; }
+    public int getMotorBLPosition() { return MotorbL != null ? MotorbL.getCurrentPosition() : 0; }
+    public int getMotorBRPosition() { return MotorbR != null ? MotorbR.getCurrentPosition() : 0; }
 
     // Velocities (ticks/sec)
-    public double getMotorFLVel() { return MotorfL.getVelocity(); }
-    public double getMotorFRVel() { return MotorfR.getVelocity(); }
-    public double getMotorBLVel() { return MotorbL.getVelocity(); }
-    public double getMotorBRVel() { return MotorbR.getVelocity(); }
+    public double getMotorFLVel() { return MotorfL != null ? MotorfL.getVelocity() : 0.0; }
+    public double getMotorFRVel() { return MotorfR != null ? MotorfR.getVelocity() : 0.0; }
+    public double getMotorBLVel() { return MotorbL != null ? MotorbL.getVelocity() : 0.0; }
+    public double getMotorBRVel() { return MotorbR != null ? MotorbR.getVelocity() : 0.0; }
 
     // RPM estimate
     public double ticksPerSecToRPM(double ticksPerSec)

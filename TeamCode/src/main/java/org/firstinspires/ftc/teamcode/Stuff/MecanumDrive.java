@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Stuff;
 
 import androidx.annotation.NonNull;
 
@@ -190,22 +190,27 @@ public final class MecanumDrive {
             }
 
             double headingDelta = heading.minus(lastHeading);
+            double leftFrontVel = leftFrontPosVel.velocity != null ? leftFrontPosVel.velocity : 0.0;
+            double leftBackVel = leftBackPosVel.velocity != null ? leftBackPosVel.velocity : 0.0;
+            double rightBackVel = rightBackPosVel.velocity != null ? rightBackPosVel.velocity : 0.0;
+            double rightFrontVel = rightFrontPosVel.velocity != null ? rightFrontPosVel.velocity : 0.0;
+
             Twist2dDual<Time> twist = kinematics.forward(new MecanumKinematics.WheelIncrements<>(
                     new DualNum<Time>(new double[]{
                             (leftFrontPosVel.position - lastLeftFrontPos),
-                            leftFrontPosVel.velocity,
+                            leftFrontVel,
                     }).times(PARAMS.inPerTick),
                     new DualNum<Time>(new double[]{
                             (leftBackPosVel.position - lastLeftBackPos),
-                            leftBackPosVel.velocity,
+                            leftBackVel,
                     }).times(PARAMS.inPerTick),
                     new DualNum<Time>(new double[]{
                             (rightBackPosVel.position - lastRightBackPos),
-                            rightBackPosVel.velocity,
+                            rightBackVel,
                     }).times(PARAMS.inPerTick),
                     new DualNum<Time>(new double[]{
                             (rightFrontPosVel.position - lastRightFrontPos),
-                            rightFrontPosVel.velocity,
+                            rightFrontVel,
                     }).times(PARAMS.inPerTick)
             ));
 

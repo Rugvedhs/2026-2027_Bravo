@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Stuff;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
@@ -86,20 +86,29 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         int par1PosDelta = par1PosVel.position - lastPar1Pos;
         int perpPosDelta = perpPosVel.position - lastPerpPos;
 
+        double par0Vel = par0PosVel.velocity != null ? par0PosVel.velocity : 0.0;
+        double par1Vel = par1PosVel.velocity != null ? par1PosVel.velocity : 0.0;
+        double perpVel = perpPosVel.velocity != null ? perpPosVel.velocity : 0.0;
+
+        double parDiff = PARAMS.par0YTicks - PARAMS.par1YTicks;
+        if (Math.abs(parDiff) < 1e-6) {
+            parDiff = 1.0;
+        }
+
         Twist2dDual<Time> twist = new Twist2dDual<>(
                 new Vector2dDual<>(
                         new DualNum<Time>(new double[] {
-                                (PARAMS.par0YTicks * par1PosDelta - PARAMS.par1YTicks * par0PosDelta) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
-                                (PARAMS.par0YTicks * par1PosVel.velocity - PARAMS.par1YTicks * par0PosVel.velocity) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
+                                (PARAMS.par0YTicks * par1PosDelta - PARAMS.par1YTicks * par0PosDelta) / parDiff,
+                                (PARAMS.par0YTicks * par1Vel - PARAMS.par1YTicks * par0Vel) / parDiff,
                         }).times(inPerTick),
                         new DualNum<Time>(new double[] {
-                                (PARAMS.perpXTicks / (PARAMS.par0YTicks - PARAMS.par1YTicks) * (par1PosDelta - par0PosDelta) + perpPosDelta),
-                                (PARAMS.perpXTicks / (PARAMS.par0YTicks - PARAMS.par1YTicks) * (par1PosVel.velocity - par0PosVel.velocity) + perpPosVel.velocity),
+                                (PARAMS.perpXTicks / parDiff * (par1PosDelta - par0PosDelta) + perpPosDelta),
+                                (PARAMS.perpXTicks / parDiff * (par1Vel - par0Vel) + perpVel),
                         }).times(inPerTick)
                 ),
                 new DualNum<>(new double[] {
-                        (par0PosDelta - par1PosDelta) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
-                        (par0PosVel.velocity - par1PosVel.velocity) / (PARAMS.par0YTicks - PARAMS.par1YTicks),
+                        (par0PosDelta - par1PosDelta) / parDiff,
+                        (par0Vel - par1Vel) / parDiff,
                 })
         );
 

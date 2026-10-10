@@ -35,6 +35,11 @@ public class DriveTrain
     // If you're unsure, you can still compare wheel speeds using ticks/sec without RPM.
     public static double TICKS_PER_REV = 28.0;
 
+    public DriveTrain(HardwareMap map)
+    {
+        this(map, "leftFront", "leftBack", "rightFront", "rightBack");
+    }
+
     public DriveTrain(HardwareMap map, String FL, String BL, String FR, String BR)
     {
         MotorfL = map.get(DcMotorEx.class, FL);

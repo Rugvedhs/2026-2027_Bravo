@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.teamcode.Core.Belt;
 import org.firstinspires.ftc.teamcode.Core.DriveTrain;
 import org.firstinspires.ftc.teamcode.Core.FlyWheels;
 import org.firstinspires.ftc.teamcode.Core.FrontIntake;
@@ -17,6 +19,7 @@ public class Biobuzz2026 extends LinearOpMode {
     public LauncherWheel launcherWheel;
     public FlyWheels flyWheels;
     public FrontIntake frontIntake;
+    public Belt belt;
 
     private long yPressedTime = 0;
 
@@ -37,10 +40,14 @@ public class Biobuzz2026 extends LinearOpMode {
                 hardwareMap.get(DcMotorEx.class, "leftFly"),
                 hardwareMap.get(DcMotorEx.class, "rightFly")
         );
+        belt = new Belt(
+                hardwareMap.get(CRServo.class, "beltServo")
+        );
 
         launcherWheel.init();
         flyWheels.init();
         frontIntake.init();
+        belt.init();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -69,11 +76,15 @@ public class Biobuzz2026 extends LinearOpMode {
             } else {
                 launcherWheel.setPower(-0.10);
             }
+
             if (overrideAll) {
                 frontIntake.update(1f, false);
+                belt.setPower(1.0);
             } else {
                 frontIntake.update(gamepad2.right_stick_y, gamepad2.a);
+                belt.update(gamepad2.right_stick_y, gamepad2.a);
             }
+
             flyWheels.update(
                     gamepad2.right_bumper,
                     gamepad2.left_bumper,

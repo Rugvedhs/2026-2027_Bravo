@@ -17,8 +17,8 @@ public class Test_TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Hardware Map mapping
-        rightLauncher = hardwareMap.get(DcMotorEx.class, "rightlauncher");
-        leftLauncher  = hardwareMap.get(DcMotorEx.class, "leftlauncher");
+        rightLauncher = hardwareMap.get(DcMotorEx.class, "rightLauncher");
+        leftLauncher  = hardwareMap.get(DcMotorEx.class, "leftLauncher");
 
         // Set directions and zero-power float behaviors
         rightLauncher.setDirection(DcMotor.Direction.FORWARD);

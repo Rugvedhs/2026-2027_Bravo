@@ -27,8 +27,8 @@ public class Biobuzz2026 extends LinearOpMode {
     public void runOpMode() {
         driveTrain = new DriveTrain(
                 hardwareMap,
-                "leftFront", "leftBack",
-                "rightFront", "rightBack"
+                "leftFront", "leftbackdri",
+                "rightFront", "rightbackdri"
         );
         launcherWheel = new LauncherWheel(
                 hardwareMap.get(DcMotor.class, "LauncherWheel")
@@ -37,8 +37,8 @@ public class Biobuzz2026 extends LinearOpMode {
                 hardwareMap.get(DcMotor.class, "FrontIntake")
         );
         flyWheels = new FlyWheels(
-                hardwareMap.get(DcMotorEx.class, "leftFly"),
-                hardwareMap.get(DcMotorEx.class, "rightFly")
+                hardwareMap.get(DcMotorEx.class, "leftLauncher"),
+                hardwareMap.get(DcMotorEx.class, "rightLauncher")
         );
         belt = new Belt(
                 hardwareMap.get(CRServo.class, "beltServo")

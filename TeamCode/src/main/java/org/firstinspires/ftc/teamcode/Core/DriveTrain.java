@@ -37,7 +37,7 @@ public class DriveTrain
 
     public DriveTrain(HardwareMap map)
     {
-        this(map, "leftFront", "leftBack", "rightFront", "rightBack");
+        this(map, "leftFront", "leftbackdri", "rightFront", "rightbackdri");
     }
 
     public DriveTrain(HardwareMap map, String FL, String BL, String FR, String BR)

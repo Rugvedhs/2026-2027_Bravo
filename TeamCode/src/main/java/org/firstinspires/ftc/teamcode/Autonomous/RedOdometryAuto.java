@@ -22,11 +22,10 @@ public class RedOdometryAuto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        launcherWheel = hardwareMap.get(DcMotor.class, "LauncherWheel");
-        leftFlyWheel = hardwareMap.get(DcMotor.class, "leftFly");
-        rightFlyWheel = hardwareMap.get(DcMotor.class, "rightFly");
-        frontIntake = hardwareMap.get(DcMotor.class, "FrontIntake");
-
+        try { launcherWheel = hardwareMap.get(DcMotor.class, "LauncherWheel"); } catch (Exception e) { launcherWheel = null; }
+        try { leftFlyWheel = hardwareMap.get(DcMotor.class, "leftLauncher"); } catch (Exception e) { leftFlyWheel = null; }
+        try { rightFlyWheel = hardwareMap.get(DcMotor.class, "rightLauncher"); } catch (Exception e) { rightFlyWheel = null; }
+        try { frontIntake = hardwareMap.get(DcMotor.class, "FrontIntake"); } catch (Exception e) { frontIntake = null; }
 
         Pose2d beginPose = new Pose2d(new Vector2d(-53, 47), Math.toRadians(128));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
@@ -73,43 +72,43 @@ public class RedOdometryAuto extends LinearOpMode {
 
     public Action shootFrontIntake() {
         return packet -> {
-            launcherWheel.setPower(-1.0);
-            leftFlyWheel.setPower(-0.7);
-            rightFlyWheel.setPower(0.7);
-            frontIntake.setPower(-1.0);
+            if (launcherWheel != null) launcherWheel.setPower(-1.0);
+            if (leftFlyWheel != null) leftFlyWheel.setPower(-0.7);
+            if (rightFlyWheel != null) rightFlyWheel.setPower(0.7);
+            if (frontIntake != null) frontIntake.setPower(-1.0);
             return false;
         };
     }
 
     public Action intakeStack() {
         return packet -> {
-            frontIntake.setPower(-1.0);
+            if (frontIntake != null) frontIntake.setPower(-1.0);
             return false;
         };
     }
 
     public Action stopIntake() {
         return packet -> {
-            launcherWheel.setPower(0);
-            frontIntake.setPower(0);
+            if (launcherWheel != null) launcherWheel.setPower(0);
+            if (frontIntake != null) frontIntake.setPower(0);
             return false;
         };
     }
-    public Action activateFlyWheels()
-    {
+
+    public Action activateFlyWheels() {
         return packet -> {
-            leftFlyWheel.setPower(-0.7);
-            rightFlyWheel.setPower(0.7);
+            if (leftFlyWheel != null) leftFlyWheel.setPower(-0.7);
+            if (rightFlyWheel != null) rightFlyWheel.setPower(0.7);
             return false;
         };
     }
 
     public Action stopAll() {
         return packet -> {
-            launcherWheel.setPower(0);
-            frontIntake.setPower(0);
-            leftFlyWheel.setPower(0.0);
-            rightFlyWheel.setPower(0.0);
+            if (launcherWheel != null) launcherWheel.setPower(0);
+            if (frontIntake != null) frontIntake.setPower(0);
+            if (leftFlyWheel != null) leftFlyWheel.setPower(0.0);
+            if (rightFlyWheel != null) rightFlyWheel.setPower(0.0);
             return false;
         };
     }

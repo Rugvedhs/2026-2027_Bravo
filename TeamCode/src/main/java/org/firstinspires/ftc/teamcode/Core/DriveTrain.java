@@ -42,10 +42,10 @@ public class DriveTrain
 
     public DriveTrain(HardwareMap map, String FL, String BL, String FR, String BR)
     {
-        MotorfL = map.get(DcMotorEx.class, FL);
-        MotorbL = map.get(DcMotorEx.class, BL);
-        MotorfR = map.get(DcMotorEx.class, FR);
-        MotorbR = map.get(DcMotorEx.class, BR);
+        try { MotorfL = map.get(DcMotorEx.class, FL); } catch (Exception ignored) { MotorfL = null; }
+        try { MotorbL = map.get(DcMotorEx.class, BL); } catch (Exception ignored) { MotorbL = null; }
+        try { MotorfR = map.get(DcMotorEx.class, FR); } catch (Exception ignored) { MotorfR = null; }
+        try { MotorbR = map.get(DcMotorEx.class, BR); } catch (Exception ignored) { MotorbR = null; }
 
         // Default direction: if your physical wiring makes a wheel spin wrong way, reverse here.
         setDirection(DcMotor.Direction.FORWARD);

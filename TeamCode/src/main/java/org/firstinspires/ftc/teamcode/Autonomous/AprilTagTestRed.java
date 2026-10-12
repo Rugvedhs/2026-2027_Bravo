@@ -33,14 +33,18 @@ public class AprilTagTestRed extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        limelight = hardwareMap.get(Limelight3A.class, "limelight");
-        limelight.setPollRateHz(100);
-        limelight.start();
+        try {
+            limelight = hardwareMap.get(Limelight3A.class, "limelight");
+            limelight.setPollRateHz(100);
+            limelight.start();
+        } catch (Exception ignored) {
+            limelight = null;
+        }
 
-        launcherWheel = hardwareMap.get(DcMotor.class, "LauncherWheel");
-        leftFlyWheel = hardwareMap.get(DcMotor.class, "leftFly");
-        rightFlyWheel = hardwareMap.get(DcMotor.class, "rightFly");
-        frontIntake = hardwareMap.get(DcMotor.class, "FrontIntake");
+        try { launcherWheel = hardwareMap.get(DcMotor.class, "LauncherWheel"); } catch (Exception ignored) { launcherWheel = null; }
+        try { leftFlyWheel = hardwareMap.get(DcMotor.class, "leftLauncher"); } catch (Exception ignored) { leftFlyWheel = null; }
+        try { rightFlyWheel = hardwareMap.get(DcMotor.class, "rightLauncher"); } catch (Exception ignored) { rightFlyWheel = null; }
+        try { frontIntake = hardwareMap.get(DcMotor.class, "FrontIntake"); } catch (Exception ignored) { frontIntake = null; }
 
         Pose2d beginPose = new Pose2d(new Vector2d(-53, 47), Math.toRadians(128));
         MecanumDrive drive = new MecanumDrive(hardwareMap, beginPose);
@@ -78,10 +82,11 @@ public class AprilTagTestRed extends LinearOpMode {
             telemetry.update();
         }
 
-        limelight.stop();
+        if (limelight != null) limelight.stop();
     }
 
     private int detectTag() {
+        if (limelight == null) return 23;
         limelight.pipelineSwitch(APRILTAG_PIPELINE);
 
         long startTime = System.currentTimeMillis();
@@ -149,36 +154,36 @@ public class AprilTagTestRed extends LinearOpMode {
 
     public Action shootFrontIntake() {
         return packet -> {
-            launcherWheel.setPower(-1.0);
-            leftFlyWheel.setPower(-0.7);
-            rightFlyWheel.setPower(0.7);
-            frontIntake.setPower(-1.0);
+            if (launcherWheel != null) launcherWheel.setPower(-1.0);
+            if (leftFlyWheel != null) leftFlyWheel.setPower(-0.7);
+            if (rightFlyWheel != null) rightFlyWheel.setPower(0.7);
+            if (frontIntake != null) frontIntake.setPower(-1.0);
             return false;
         };
     }
 
     public Action stopAll() {
         return packet -> {
-            launcherWheel.setPower(0);
-            frontIntake.setPower(0);
-            leftFlyWheel.setPower(0);
-            rightFlyWheel.setPower(0);
+            if (launcherWheel != null) launcherWheel.setPower(0);
+            if (frontIntake != null) frontIntake.setPower(0);
+            if (leftFlyWheel != null) leftFlyWheel.setPower(0);
+            if (rightFlyWheel != null) rightFlyWheel.setPower(0);
             return false;
         };
     }
 
     public Action activateFlyWheels() {
         return packet -> {
-            leftFlyWheel.setPower(-0.7);
-            rightFlyWheel.setPower(0.7);
+            if (leftFlyWheel != null) leftFlyWheel.setPower(-0.7);
+            if (rightFlyWheel != null) rightFlyWheel.setPower(0.7);
             return false;
         };
     }
 
     public Action stopFlywheels() {
         return packet -> {
-            rightFlyWheel.setPower(0);
-            leftFlyWheel.setPower(0);
+            if (rightFlyWheel != null) rightFlyWheel.setPower(0);
+            if (leftFlyWheel != null) leftFlyWheel.setPower(0);
             return false;
         };
     }

@@ -9,38 +9,30 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class Test_Auto extends LinearOpMode {
 
     Driver driver;
-    public CRServo backBottom;
-    public CRServo backIntake;
-    public CRServo launcherWheel;
-    public DcMotor leftFlyWheel;
-    public DcMotor rightFlyWheel;
-    public CRServo leftBelt;
-    public CRServo rightBelt;
-    public CRServo frontIntake;
-
+    public DcMotor leftLauncher;
+    public DcMotor rightLauncher;
+    public CRServo beltServo;
+    public CRServo pushServo;
+    public CRServo splitterServo;
 
     @Override
     public void runOpMode() {
         driver = new Driver(this, hardwareMap);
-        backBottom = (hardwareMap.get(CRServo.class, "BackBottom"));
-        backIntake = (hardwareMap.get(CRServo.class, "BackIntake"));
-        launcherWheel = (hardwareMap.get(CRServo.class, "LauncherWheel"));
-        leftFlyWheel = (hardwareMap.get(DcMotor.class, "leftFly"));
-        rightFlyWheel = (hardwareMap.get(DcMotor.class, "rightFly"));
-        leftBelt = (hardwareMap.get(CRServo.class, "LeftBelt"));
-        rightBelt = (hardwareMap.get(CRServo.class, "RightBelt"));
-        frontIntake = (hardwareMap.get(CRServo.class, "FrontIntake"));
+        try { leftLauncher = hardwareMap.get(DcMotor.class, "leftLauncher"); } catch (Exception ignored) { leftLauncher = null; }
+        try { rightLauncher = hardwareMap.get(DcMotor.class, "rightLauncher"); } catch (Exception ignored) { rightLauncher = null; }
+        try { beltServo = hardwareMap.get(CRServo.class, "beltServo"); } catch (Exception ignored) { beltServo = null; }
+        try { pushServo = hardwareMap.get(CRServo.class, "rightpush"); } catch (Exception ignored) { pushServo = null; }
+        try { splitterServo = hardwareMap.get(CRServo.class, "splitterservo"); } catch (Exception ignored) { splitterServo = null; }
 
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized - Test_Auto (Safe Mode)");
         telemetry.update();
-
 
         waitForStart();
 
         if (opModeIsActive()) {
-
+            telemetry.addData("Status", "Running Autonomous Test Sequence");
+            telemetry.update();
+            sleep(1000);
         }
-
     }
-
 }

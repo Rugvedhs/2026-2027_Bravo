@@ -169,8 +169,6 @@ public final class TankDrive {
 
         @Override
         public PoseVelocity2d update() {
-            Twist2dDual<Time> delta;
-
             List<PositionVelocityPair> leftReadings = new ArrayList<>(), rightReadings = new ArrayList<>();
             double meanLeftPos = 0.0, meanLeftVel = 0.0;
             for (Encoder e : leftEncs) {

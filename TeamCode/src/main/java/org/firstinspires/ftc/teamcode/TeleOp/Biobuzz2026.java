@@ -28,23 +28,23 @@ public class Biobuzz2026 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        // Driver A: Drivetrain Mapping (Safe Initialization for Testing & Prototyping)
+        // Driver A: Drivetrain Mapping (Control Hub: backrightdri, backleftdri | Expansion Hub 2: frontrightdri, frontleftdri)
         driveTrain = new DriveTrain(
                 hardwareMap,
-                "leftFront", "leftbackdri",
-                "rightFront", "rightbackdri"
+                "frontleftdri", "backleftdri",
+                "frontrightdri", "backrightdri"
         );
 
         // Driver B: Mechanism Mapping
         launcherWheel = new LauncherWheel(getDeviceSafe(DcMotor.class, "LauncherWheel"));
-        frontIntake = new FrontIntake(getDeviceSafe(DcMotor.class, "FrontIntake"));
+        frontIntake = new FrontIntake(getDeviceSafe(DcMotor.class, "frontintake"));
         flyWheels = new FlyWheels(
-                getDeviceSafe(DcMotorEx.class, "leftLauncher"),
-                getDeviceSafe(DcMotorEx.class, "rightLauncher")
+                getDeviceSafe(DcMotorEx.class, "leftlauncher"),
+                getDeviceSafe(DcMotorEx.class, "rightlauncher")
         );
         belt = new Belt(getDeviceSafe(CRServo.class, "beltServo"));
-        pushServo = getDeviceSafe(CRServo.class, "rightpush");
-        splitterServo = getDeviceSafe(CRServo.class, "splitterservo");
+        pushServo = getDeviceSafe(CRServo.class, "rightpush");          // Expansion Hub 2 Servo Port 0
+        splitterServo = getDeviceSafe(CRServo.class, "splitterservo");  // Control Hub Servo Port 5
 
         // Initialization & Directions
         if (launcherWheel != null) launcherWheel.init();

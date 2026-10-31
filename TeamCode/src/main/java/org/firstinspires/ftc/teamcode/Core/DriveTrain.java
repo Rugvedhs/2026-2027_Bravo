@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import androidx.annotation.NonNull;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 
 /**
  * Basic drivetrain helper. Supports direct open-loop driving (teleop)
@@ -37,15 +35,15 @@ public class DriveTrain
 
     public DriveTrain(HardwareMap map)
     {
-        this(map, "leftFront", "leftbackdri", "rightFront", "rightbackdri");
+        this(map, "frontleftdri", "backleftdri", "frontrightdri", "backrightdri");
     }
 
     public DriveTrain(HardwareMap map, String FL, String BL, String FR, String BR)
     {
-        try { MotorfL = map.get(DcMotorEx.class, FL); } catch (Exception ignored) { MotorfL = null; }
-        try { MotorbL = map.get(DcMotorEx.class, BL); } catch (Exception ignored) { MotorbL = null; }
-        try { MotorfR = map.get(DcMotorEx.class, FR); } catch (Exception ignored) { MotorfR = null; }
-        try { MotorbR = map.get(DcMotorEx.class, BR); } catch (Exception ignored) { MotorbR = null; }
+        MotorfL = getMotorSafe(map, FL, "frontleftdri", "leftFront", "fL", "FL");
+        MotorbL = getMotorSafe(map, BL, "backleftdri", "leftbackdri", "leftBack", "bL", "BL");
+        MotorfR = getMotorSafe(map, FR, "frontrightdri", "rightFront", "fR", "FR");
+        MotorbR = getMotorSafe(map, BR, "backrightdri", "rightbackdri", "rightBack", "bR", "BR");
 
         // Default direction: if your physical wiring makes a wheel spin wrong way, reverse here.
         setDirection(DcMotor.Direction.FORWARD);
@@ -59,6 +57,18 @@ public class DriveTrain
         Stop();
     }
 
+    private DcMotorEx getMotorSafe(HardwareMap map, String primaryName, String... fallbacks) {
+        if (primaryName != null) {
+            try { return map.get(DcMotorEx.class, primaryName); } catch (Exception ignored) {}
+            try { return (DcMotorEx) map.get(DcMotor.class, primaryName); } catch (Exception ignored) {}
+        }
+        for (String name : fallbacks) {
+            try { return map.get(DcMotorEx.class, name); } catch (Exception ignored) {}
+            try { return (DcMotorEx) map.get(DcMotor.class, name); } catch (Exception ignored) {}
+        }
+        return null;
+    }
+
     /**
      * Teleop driving: mix turn/forward/strafe and write motor power once (prevents overwriting).
      */
@@ -70,7 +80,7 @@ public class DriveTrain
         double strafe  =  gamepad.right_stick_x;  // right positive
 
         // deadzone
-        final double DZ = 0.3; // 0.08
+        final double DZ = 0.08; // 0.08
         forward = Math.abs(forward) < DZ ? 0.0 : forward;
         turn    = Math.abs(turn)    < DZ ? 0.0 : turn;
         strafe  = Math.abs(strafe)  < DZ ? 0.0 : strafe;
@@ -278,5 +288,4 @@ public class DriveTrain
         telemetry.addData("BR pos", getMotorBRPosition());
 
     }
-
 }

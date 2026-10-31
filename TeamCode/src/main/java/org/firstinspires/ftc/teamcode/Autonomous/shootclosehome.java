@@ -2,110 +2,65 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-/**
- * shootclosehome Autonomous OpMode:
- * 1. Move forward 1 tile.
- * 2. Spin intake & launchers to shoot balls.
- * 3. Strafe 1 tile right.
- */
 @Autonomous(name="shootclosehome", group="Autonomous")
-public class shootclosehome extends LinearOpMode {
-
-    private Driver driver;
-    private DcMotorEx rightLauncher;
-    private DcMotorEx leftLauncher;
-    private DcMotor frontIntake;
-    private CRServo splitterServo;
-    private CRServo rightPusherServo;
-    private CRServo leftPusherServo;
+public class shootclosehome extends LinearOpMode
+{
+    Driver driver;
+    public DcMotorEx leftLauncher;
+    public DcMotor frontIntake;
 
     @Override
     public void runOpMode() {
         driver = new Driver(this, hardwareMap);
 
-        rightLauncher = getDeviceSafe(DcMotorEx.class, "rightlauncher");
-        if (rightLauncher == null) rightLauncher = getDeviceSafe(DcMotorEx.class, "rightLauncher");
+        leftLauncher = getDeviceSafe(DcMotorEx.class, "leftlauncher", "leftLauncher");
+        frontIntake  = getDeviceSafe(DcMotor.class, "frontintake", "FrontIntake");
 
-        leftLauncher = getDeviceSafe(DcMotorEx.class, "leftlauncher");
-        if (leftLauncher == null) leftLauncher = getDeviceSafe(DcMotorEx.class, "leftLauncher");
-
-        frontIntake = getDeviceSafe(DcMotor.class, "frontintake");
-        if (frontIntake == null) frontIntake = getDeviceSafe(DcMotor.class, "FrontIntake");
-
-        splitterServo    = getDeviceSafe(CRServo.class, "splitterservo");
-        rightPusherServo = getDeviceSafe(CRServo.class, "rightpush");
-        leftPusherServo  = getDeviceSafe(CRServo.class, "leftpush");
-
-        if (rightLauncher != null) {
-            rightLauncher.setDirection(DcMotor.Direction.REVERSE);
-            rightLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            rightLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
         if (leftLauncher != null) {
             leftLauncher.setDirection(DcMotor.Direction.FORWARD);
             leftLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             leftLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
 
-        if (frontIntake != null) frontIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-        if (splitterServo != null) splitterServo.setDirection(DcMotorSimple.Direction.REVERSE);
-        if (rightPusherServo != null) rightPusherServo.setDirection(DcMotorSimple.Direction.FORWARD);
-        if (leftPusherServo != null) leftPusherServo.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (frontIntake != null) {
+            frontIntake.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
 
         telemetry.addData("Status", "Initialized - shootclosehome");
         telemetry.update();
 
         waitForStart();
 
-        if (opModeIsActive()) {
+        if (opModeIsActive())
+        {
             // 1. Move forward 1 tile
-            telemetry.addData("Step", "1. Driving Forward 1 Tile");
-            telemetry.update();
             driver.forward_tiles(1.0, 0.5);
 
-            // 2. Power ON launchers, intake, splitter, and pushers to shoot balls
-            telemetry.addData("Step", "2. Spinning Launchers & Intake to Shoot Balls");
-            telemetry.update();
-
+            // 2. Power ON left launcher flywheel and intake to shoot
             if (leftLauncher != null) leftLauncher.setPower(1.0);
-            if (rightLauncher != null) rightLauncher.setPower(0.70);
-            sleep(1000); // Allow flywheels to reach full RPM
+            sleep(1000); // Spin up flywheel
 
-            if (frontIntake != null) frontIntake.setPower(-1.0);
-            if (splitterServo != null) splitterServo.setPower(-1.0);
-            if (rightPusherServo != null) rightPusherServo.setPower(1.0);
-            if (leftPusherServo != null) leftPusherServo.setPower(1.0);
-
+            if (frontIntake != null) frontIntake.setPower(-1.0); // Pull balls in
             sleep(3500); // Shoot balls
 
-            // Stop mechanism motors
-            if (rightLauncher != null) rightLauncher.setPower(0.0);
+            // 3. Stop mechanisms
             if (leftLauncher != null) leftLauncher.setPower(0.0);
             if (frontIntake != null) frontIntake.setPower(0.0);
-            if (splitterServo != null) splitterServo.setPower(0.0);
-            if (rightPusherServo != null) rightPusherServo.setPower(0.0);
-            if (leftPusherServo != null) leftPusherServo.setPower(0.0);
 
-            // 3. Strafe 1 tile right
-            telemetry.addData("Step", "3. Strafing 1 Tile Right");
-            telemetry.update();
+            // 4. Strafe 1 tile right
             driver.strafe_tiles(1.0, 0.5);
-
-            telemetry.addData("Step", "Autonomous Complete - shootclosehome");
-            telemetry.update();
         }
     }
 
-    private <T> T getDeviceSafe(Class<T> classId, String deviceName) {
-        try {
-            return hardwareMap.get(classId, deviceName);
-        } catch (Exception ignored) {
-            return null;
+    private <T> T getDeviceSafe(Class<T> classId, String primaryName, String... fallbacks) {
+        try { return hardwareMap.get(classId, primaryName); } catch (Exception ignored) {}
+        for (String name : fallbacks) {
+            try { return hardwareMap.get(classId, name); } catch (Exception ignored) {}
         }
+        return null;
     }
 }

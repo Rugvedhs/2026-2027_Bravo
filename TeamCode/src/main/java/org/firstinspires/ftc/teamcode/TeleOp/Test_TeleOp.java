@@ -135,15 +135,14 @@ public class Test_TeleOp extends LinearOpMode {
             }
             if (splitterServo != null) splitterServo.setPower(splitterPower);
 
-            // 4. BOTH PUSHER SERVOS (Stopped by default, spin on demand when bumpers held)
+            // 4. PUSHER SERVOS (Top Right Toggle on Gamepad 2)
             double rightPushPower = 0.0;
-            if (gamepad2.right_bumper) {
-                rightPushPower = 1.00;
-            }
+            double leftPushPower  = 0.0;
 
-            double leftPushPower = 0.0;
-            if (gamepad2.left_bumper) {
-                leftPushPower = 1.00;
+            // Top Right Toggle (Right Bumper / Right Trigger) on Gamepad 2 -> Spin rightPusherServo AND leftPusherServo Counter-Clockwise (-1.00)
+            if (gamepad2.right_bumper || gamepad2.right_trigger > 0.1) {
+                rightPushPower = -1.00; // The other way (-1.00)
+                leftPushPower  = -1.00; // The other way (-1.00)
             }
 
             if (rightPusherServo != null) rightPusherServo.setPower(rightPushPower);

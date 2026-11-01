@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.Core;
 
 import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 
 /**
  * Basic drivetrain helper. Supports direct open-loop driving (teleop)
@@ -33,17 +35,12 @@ public class DriveTrain
     // If you're unsure, you can still compare wheel speeds using ticks/sec without RPM.
     public static double TICKS_PER_REV = 28.0;
 
-    public DriveTrain(HardwareMap map)
-    {
-        this(map, "frontleftdri", "backleftdri", "frontrightdri", "backrightdri");
-    }
-
     public DriveTrain(HardwareMap map, String FL, String BL, String FR, String BR)
     {
-        MotorfL = getMotorSafe(map, FL, "frontleftdri", "leftFront", "fL", "FL");
-        MotorbL = getMotorSafe(map, BL, "backleftdri", "leftbackdri", "leftBack", "bL", "BL");
-        MotorfR = getMotorSafe(map, FR, "frontrightdri", "rightFront", "fR", "FR");
-        MotorbR = getMotorSafe(map, BR, "backrightdri", "rightbackdri", "rightBack", "bR", "BR");
+        MotorfL = map.get(DcMotorEx.class, FL);
+        MotorbL = map.get(DcMotorEx.class, BL);
+        MotorfR = map.get(DcMotorEx.class, FR);
+        MotorbR = map.get(DcMotorEx.class, BR);
 
         // Default direction: if your physical wiring makes a wheel spin wrong way, reverse here.
         setDirection(DcMotor.Direction.FORWARD);
@@ -57,18 +54,6 @@ public class DriveTrain
         Stop();
     }
 
-    private DcMotorEx getMotorSafe(HardwareMap map, String primaryName, String... fallbacks) {
-        if (primaryName != null) {
-            try { return map.get(DcMotorEx.class, primaryName); } catch (Exception ignored) {}
-            try { return (DcMotorEx) map.get(DcMotor.class, primaryName); } catch (Exception ignored) {}
-        }
-        for (String name : fallbacks) {
-            try { return map.get(DcMotorEx.class, name); } catch (Exception ignored) {}
-            try { return (DcMotorEx) map.get(DcMotor.class, name); } catch (Exception ignored) {}
-        }
-        return null;
-    }
-
     /**
      * Teleop driving: mix turn/forward/strafe and write motor power once (prevents overwriting).
      */
@@ -80,7 +65,7 @@ public class DriveTrain
         double strafe  =  gamepad.right_stick_x;  // right positive
 
         // deadzone
-        final double DZ = 0.08; // 0.08
+        final double DZ = 0.3; // 0.08
         forward = Math.abs(forward) < DZ ? 0.0 : forward;
         turn    = Math.abs(turn)    < DZ ? 0.0 : turn;
         strafe  = Math.abs(strafe)  < DZ ? 0.0 : strafe;
@@ -144,10 +129,10 @@ public class DriveTrain
 
     protected void setDirection(DcMotor.Direction direction)
     {
-        if (MotorfL != null) MotorfL.setDirection(direction);
-        if (MotorbL != null) MotorbL.setDirection(direction);
-        if (MotorfR != null) MotorfR.setDirection(direction);
-        if (MotorbR != null) MotorbR.setDirection(direction);
+        MotorfL.setDirection(direction);
+        MotorbL.setDirection(direction);
+        MotorfR.setDirection(direction);
+        MotorbR.setDirection(direction);
     }
 
     /**
@@ -187,75 +172,72 @@ public class DriveTrain
 
     public void setPower(double power)
     {
-        if (MotorfL != null) MotorfL.setPower(power * MOTOR_fL_MODIFIER);
-        if (MotorbL != null) MotorbL.setPower(power * MOTOR_bL_MODIFIER);
-        if (MotorfR != null) MotorfR.setPower(power * MOTOR_fR_MODIFIER);
-        if (MotorbR != null) MotorbR.setPower(power * MOTOR_bR_MODIFIER);
+        MotorfL.setPower(power * MOTOR_fL_MODIFIER);
+        MotorbL.setPower(power * MOTOR_bL_MODIFIER);
+        MotorfR.setPower(power * MOTOR_fR_MODIFIER);
+        MotorbR.setPower(power * MOTOR_bR_MODIFIER);
     }
 
     protected void setPowerFL(double power)
     {
-        if (MotorfL != null) MotorfL.setPower(power * MOTOR_fL_MODIFIER);
+        MotorfL.setPower(power * MOTOR_fL_MODIFIER);
     }
 
     protected void setPowerBL(double power)
     {
-        if (MotorbL != null) MotorbL.setPower(power * MOTOR_bL_MODIFIER);
+        MotorbL.setPower(power * MOTOR_bL_MODIFIER);
     }
 
     protected void setPowerFR(double power)
     {
-        if (MotorfR != null) MotorfR.setPower(power * MOTOR_fR_MODIFIER);
+        MotorfR.setPower(power * MOTOR_fR_MODIFIER);
     }
 
     protected void setPowerBR(double power)
     {
-        if (MotorbR != null) MotorbR.setPower(power * MOTOR_bR_MODIFIER);
+        MotorbR.setPower(power * MOTOR_bR_MODIFIER);
     }
 
     public void setMode(DcMotor.RunMode mode)
     {
-        if (MotorfL != null) MotorfL.setMode(mode);
-        if (MotorbL != null) MotorbL.setMode(mode);
-        if (MotorfR != null) MotorfR.setMode(mode);
-        if (MotorbR != null) MotorbR.setMode(mode);
+        MotorfL.setMode(mode);
+        MotorbL.setMode(mode);
+        MotorfR.setMode(mode);
+        MotorbR.setMode(mode);
     }
 
     public void setTargetPosition(int ticks)
     {
-        if (MotorfL != null) MotorfL.setTargetPosition(ticks);
-        if (MotorbL != null) MotorbL.setTargetPosition(ticks);
-        if (MotorfR != null) MotorfR.setTargetPosition(ticks);
-        if (MotorbR != null) MotorbR.setTargetPosition(ticks);
+        MotorfL.setTargetPosition(ticks);
+        MotorbL.setTargetPosition(ticks);
+        MotorfR.setTargetPosition(ticks);
+        MotorbR.setTargetPosition(ticks);
     }
 
     public boolean isBusy()
     {
-        return (MotorfL != null && MotorfL.isBusy()) ||
-               (MotorbL != null && MotorbL.isBusy()) ||
-               (MotorfR != null && MotorfR.isBusy()) ||
-               (MotorbR != null && MotorbR.isBusy());
+        return MotorfL.isBusy() || MotorbL.isBusy() || MotorfR.isBusy() || MotorbR.isBusy();
     }
 
     public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior)
     {
-        if (MotorfL != null) MotorfL.setZeroPowerBehavior(behavior);
-        if (MotorbL != null) MotorbL.setZeroPowerBehavior(behavior);
-        if (MotorfR != null) MotorfR.setZeroPowerBehavior(behavior);
-        if (MotorbR != null) MotorbR.setZeroPowerBehavior(behavior);
+        MotorfL.setZeroPowerBehavior(behavior);
+        MotorbL.setZeroPowerBehavior(behavior);
+        MotorfR.setZeroPowerBehavior(behavior);
+        MotorbR.setZeroPowerBehavior(behavior);
     }
 
     // Positions
-    public int getMotorFLPosition() { return MotorfL != null ? MotorfL.getCurrentPosition() : 0; }
-    public int getMotorFRPosition() { return MotorfR != null ? MotorfR.getCurrentPosition() : 0; }
-    public int getMotorBLPosition() { return MotorbL != null ? MotorbL.getCurrentPosition() : 0; }
-    public int getMotorBRPosition() { return MotorbR != null ? MotorbR.getCurrentPosition() : 0; }
+    public int getMotorFLPosition() { return MotorfL.getCurrentPosition(); }
+    public int getMotorFRPosition() { return MotorfR.getCurrentPosition(); }
+    public int getMotorBLPosition() { return MotorbL.getCurrentPosition(); }
+    public int getMotorBRPosition() { return MotorbR.getCurrentPosition(); }
 
     // Velocities (ticks/sec)
-    public double getMotorFLVel() { return MotorfL != null ? MotorfL.getVelocity() : 0.0; }
-    public double getMotorFRVel() { return MotorfR != null ? MotorfR.getVelocity() : 0.0; }
-    public double getMotorBLVel() { return MotorbL != null ? MotorbL.getVelocity() : 0.0; }
-    public double getMotorBRVel() { return MotorbR != null ? MotorbR.getVelocity() : 0.0; }
+    public double getMotorFLVel() { return MotorfL.getVelocity(); }
+    public double getMotorFRVel() { return MotorfR.getVelocity(); }
+    public double getMotorBLVel() { return MotorbL.getVelocity(); }
+    public double getMotorBRVel() { return MotorbR.getVelocity(); }
 
     // RPM estimate
     public double ticksPerSecToRPM(double ticksPerSec)
@@ -288,4 +270,5 @@ public class DriveTrain
         telemetry.addData("BR pos", getMotorBRPosition());
 
     }
+
 }

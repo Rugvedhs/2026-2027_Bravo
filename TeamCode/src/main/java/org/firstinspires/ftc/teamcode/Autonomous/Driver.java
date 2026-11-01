@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.Core.DriveTrain;
 
 /**
  * Driver extends DriveTrain with encoder-based high-level movement routines.
+ * This version expects a LinearOpMode reference so wait loops can check opModeIsActive()
+ * and update telemetry safely.
  */
 public class Driver extends DriveTrain
 {
@@ -17,7 +19,7 @@ public class Driver extends DriveTrain
     /** The length of a tile in inches */
     int tileLength = 24;
 
-    /** Ticks per rotation of the motor */
+    /** The number of ticks per rotation of the motor (example: REV 20:1 encoder) */
     private final double encoderResolution = 537.7;
 
     /** Wheel diameter in millimeters */
@@ -31,10 +33,19 @@ public class Driver extends DriveTrain
     /** Default timeout for any move (ms) */
     private static final long DEFAULT_MOVE_TIMEOUT_MS = 5000;
 
+    /**
+     * Constructor now accepts LinearOpMode to allow opMode checks and telemetry inside wait loops.
+     */
     public Driver(LinearOpMode opMode, HardwareMap map)
     {
-        super(map, "frontleftdri", "backleftdri", "frontrightdri", "backrightdri");
+        super(map, "leftFront", "leftBack", "rightFront", "rightBack");
         this.opMode = opMode;
+
+        // KEEP DIRECTIONS EXACTLY AS YOU HAD THEM
+        super.MotorfR.setDirection(DcMotor.Direction.REVERSE);
+        super.MotorbR.setDirection(DcMotor.Direction.REVERSE);
+        super.MotorbL.setDirection(DcMotor.Direction.REVERSE);
+        super.MotorfL.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize encoders and ensure brake behavior for precise autonomous moves
         super.initEncoders();
@@ -51,17 +62,22 @@ public class Driver extends DriveTrain
 
         while (opMode.opModeIsActive() && super.isBusy() && timer.milliseconds() < timeoutMs)
         {
-            opMode.telemetry.addData("FL pos", getMotorFLPosition());
-            opMode.telemetry.addData("FR pos", getMotorFRPosition());
-            opMode.telemetry.addData("BL pos", getMotorBLPosition());
-            opMode.telemetry.addData("BR pos", getMotorBRPosition());
+            // Helpful telemetry for debugging during autonomous
+            opMode.telemetry.addData("leftFront", getMotorFLPosition());
+            opMode.telemetry.addData("rightFront", getMotorFRPosition());
+            opMode.telemetry.addData("leftBack", getMotorBLPosition());
+            opMode.telemetry.addData("rightBack", getMotorBRPosition());
             opMode.telemetry.update();
 
+            // Let the system breathe and allow other tasks to run
             opMode.idle();
         }
 
+        // Stop motors to ensure a clean end state
         super.Stop();
-        super.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        // After a RUN_TO_POSITION operation, switch to RUN_USING_ENCODER so encoders remain active
+        super.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void wait_to_finish()
@@ -71,15 +87,15 @@ public class Driver extends DriveTrain
 
     private void forward_ticks(int ticks, double power)
     {
-        int FL_target = super.getMotorFLPosition() + ticks;
-        int BL_target = super.getMotorBLPosition() + ticks;
-        int FR_target = super.getMotorFRPosition() + ticks;
-        int BR_target = super.getMotorBRPosition() + ticks;
+        int FR_target = super.MotorfR.getCurrentPosition() - ticks;
+        int FL_target = super.MotorfL.getCurrentPosition() + ticks;
+        int BR_target = super.MotorbR.getCurrentPosition() - ticks;
+        int BL_target = super.MotorbL.getCurrentPosition() + ticks;
 
-        if (super.MotorfL != null) super.MotorfL.setTargetPosition(FL_target);
-        if (super.MotorbL != null) super.MotorbL.setTargetPosition(BL_target);
-        if (super.MotorfR != null) super.MotorfR.setTargetPosition(FR_target);
-        if (super.MotorbR != null) super.MotorbR.setTargetPosition(BR_target);
+        super.MotorfR.setTargetPosition(FR_target);
+        super.MotorfL.setTargetPosition(FL_target);
+        super.MotorbR.setTargetPosition(BR_target);
+        super.MotorbL.setTargetPosition(BL_target);
 
         super.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         super.setPower(power);
@@ -89,12 +105,14 @@ public class Driver extends DriveTrain
 
     public void forward_distance(double distanceMm, double power)
     {
+        // distance passed in mm (consistent with wheel_diameter mm)
         int ticks = (int) (distanceMm * encoderResolution / distance_per_motor_rotation);
         forward_ticks(ticks, power);
     }
 
     public void forward_tiles(double tiles, double power)
     {
+        // convert tiles (inches) -> mm
         double distanceMm = tiles * tileLength * 25.4;
         forward_distance(distanceMm, power);
     }
@@ -106,15 +124,16 @@ public class Driver extends DriveTrain
 
     private void strafe_ticks(int ticks, double power)
     {
-        int FL_target = super.getMotorFLPosition() + ticks;
-        int BL_target = super.getMotorBLPosition() - ticks;
-        int FR_target = super.getMotorFRPosition() - ticks;
-        int BR_target = super.getMotorBRPosition() + ticks;
+        // Note: this mapping depends on your mecanum/omni layout and motor directions
+        int FR_target = super.MotorfR.getCurrentPosition() - ticks;
+        int FL_target = super.MotorfL.getCurrentPosition() - ticks;
+        int BR_target = super.MotorbR.getCurrentPosition() + ticks;
+        int BL_target = super.MotorbL.getCurrentPosition() + ticks;
 
-        if (super.MotorfL != null) super.MotorfL.setTargetPosition(FL_target);
-        if (super.MotorbL != null) super.MotorbL.setTargetPosition(BL_target);
-        if (super.MotorfR != null) super.MotorfR.setTargetPosition(FR_target);
-        if (super.MotorbR != null) super.MotorbR.setTargetPosition(BR_target);
+        super.MotorfR.setTargetPosition(FR_target);
+        super.MotorfL.setTargetPosition(FL_target);
+        super.MotorbR.setTargetPosition(BR_target);
+        super.MotorbL.setTargetPosition(BL_target);
 
         super.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         super.setPower(power);
@@ -140,15 +159,15 @@ public class Driver extends DriveTrain
 
     public void turn_ticks(int ticks, double power)
     {
-        int FL_target = super.getMotorFLPosition() + ticks;
-        int BL_target = super.getMotorBLPosition() + ticks;
-        int FR_target = super.getMotorFRPosition() - ticks;
-        int BR_target = super.getMotorBRPosition() - ticks;
+        int BL_target = super.MotorbL.getCurrentPosition() + ticks;
+        int BR_target = super.MotorbR.getCurrentPosition() + ticks;
+        int FL_target = super.MotorfL.getCurrentPosition() + ticks;
+        int FR_target = super.MotorfR.getCurrentPosition() + ticks;
 
-        if (super.MotorfL != null) super.MotorfL.setTargetPosition(FL_target);
-        if (super.MotorbL != null) super.MotorbL.setTargetPosition(BL_target);
-        if (super.MotorfR != null) super.MotorfR.setTargetPosition(FR_target);
-        if (super.MotorbR != null) super.MotorbR.setTargetPosition(BR_target);
+        super.MotorbL.setTargetPosition(BL_target);
+        super.MotorbR.setTargetPosition(BR_target);
+        super.MotorfL.setTargetPosition(FL_target);
+        super.MotorfR.setTargetPosition(FR_target);
 
         super.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         super.setPower(power);

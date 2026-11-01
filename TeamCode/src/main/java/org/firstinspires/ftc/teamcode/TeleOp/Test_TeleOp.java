@@ -95,6 +95,9 @@ public class Test_TeleOp extends LinearOpMode {
 
         waitForStart();
 
+        boolean isLeftLauncherOn = false;
+        boolean x2PreviouslyPressed = false;
+
         while (opModeIsActive()) {
 
             // ──────────────────────────────────────────────────────────────────
@@ -113,18 +116,26 @@ public class Test_TeleOp extends LinearOpMode {
             // Button B -> Shoot Right Launcher at 70% Speed
             if (gamepad2.b) rightLauncherPower = LAUNCHER_MAX_POWER;
             
-            // Button X -> Shoot Left Launcher at 100% Speed
-            if (gamepad2.x) leftLauncherPower  = LAUNCHER_MAX_POWER;
+            // Button X (Gamepad 2) -> Press-to-Toggle Left Launcher ON / OFF until pressed again
+            boolean x2Pressed = gamepad2.x;
+            if (x2Pressed && !x2PreviouslyPressed) {
+                isLeftLauncherOn = !isLeftLauncherOn;
+            }
+            x2PreviouslyPressed = x2Pressed;
+
+            if (isLeftLauncherOn) {
+                leftLauncherPower = LAUNCHER_MAX_POWER; // Same speed as before (70% power)
+            }
 
             if (rightLauncher != null) rightLauncher.setPower(rightLauncherPower);
             if (leftLauncher != null) leftLauncher.setPower(leftLauncherPower);
 
-            // 2. INTAKE MOTOR CONTROL
+            // 2. INTAKE MOTOR CONTROL (Button Y = Intaking, Button A = Outtaking)
             double intakePower = 0.0;
-            if (gamepad2.a) {
-                intakePower = -1.00; // Counter-Clockwise (Pull in)
-            } else if (gamepad2.y) {
-                intakePower = 1.00;  // Clockwise (Push out / Unjam)
+            if (gamepad2.y) {
+                intakePower = 1.00;  // Button Y = Intaking
+            } else if (gamepad2.a) {
+                intakePower = -1.00; // Button A = Outtaking
             }
             if (frontIntake != null) frontIntake.setPower(intakePower);
 
@@ -135,14 +146,14 @@ public class Test_TeleOp extends LinearOpMode {
             }
             if (splitterServo != null) splitterServo.setPower(splitterPower);
 
-            // 4. PUSHER SERVOS (Top Right Toggle on Gamepad 2)
+            // 4. PUSHER SERVOS (Right Bumper on Gamepad 2)
             double rightPushPower = 0.0;
             double leftPushPower  = 0.0;
 
-            // Top Right Toggle (Right Bumper / Right Trigger) on Gamepad 2 -> Spin rightPusherServo AND leftPusherServo Counter-Clockwise (-1.00)
+            // Right Bumper / Right Trigger on Gamepad 2 -> Other direction (-1.00)
             if (gamepad2.right_bumper || gamepad2.right_trigger > 0.1) {
-                rightPushPower = -1.00; // The other way (-1.00)
-                leftPushPower  = -1.00; // The other way (-1.00)
+                rightPushPower = -1.00;
+                leftPushPower  = -1.00;
             }
 
             if (rightPusherServo != null) rightPusherServo.setPower(rightPushPower);

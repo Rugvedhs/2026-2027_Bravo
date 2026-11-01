@@ -8,11 +8,6 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-
-/**
- * Basic drivetrain helper. Supports direct open-loop driving (teleop)
- * and helper methods for encoder-based control (autonomous).
- */
 public class DriveTrain
 {
     public DcMotorEx MotorfL, MotorbL;
@@ -54,9 +49,6 @@ public class DriveTrain
         Stop();
     }
 
-    /**
-     * Teleop driving: mix turn/forward/strafe and write motor power once (prevents overwriting).
-     */
     public void Drive(Gamepad gamepad)
     {
         // joystick axes: push up = negative on most controllers, so invert Y

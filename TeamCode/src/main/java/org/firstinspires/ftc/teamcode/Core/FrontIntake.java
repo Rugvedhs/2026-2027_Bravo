@@ -1,32 +1,35 @@
 package org.firstinspires.ftc.teamcode.Core;
-
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 public class FrontIntake {
-    private final DcMotor frontIntake;
-    public FrontIntake(DcMotor frontIntake) {
-        this.frontIntake = frontIntake;
+    private final DcMotorEx FrontIntake;
+
+    public FrontIntake(DcMotorEx FrontIntake) {
+        this.FrontIntake = FrontIntake;
     }
+
     public void init() {
-        if (frontIntake != null) {
-            frontIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-            frontIntake.setPower(0.0);
+        if (FrontIntake != null) {
+            FrontIntake.setDirection(DcMotorEx.Direction.FORWARD);
+            FrontIntake.setPower(0.0);
         }
     }
+
     public void update(boolean yPressed, boolean aPressed) {
-        if (frontIntake == null) return;
+        if (FrontIntake == null) return;
+
         if (yPressed) {
-            frontIntake.setPower(1.0);
+            FrontIntake.setPower(1.0);
         } else if (aPressed) {
-            frontIntake.setPower(-1.0);
+            FrontIntake.setPower(-1.0);
         } else {
-            frontIntake.setPower(0.0);
+            FrontIntake.setPower(0.0);
         }
     }
+
     public void stop() {
-        if (frontIntake != null) {
-            frontIntake.setPower(0.0);
+        if (FrontIntake != null) {
+            FrontIntake.setPower(0.0);
         }
     }
 }

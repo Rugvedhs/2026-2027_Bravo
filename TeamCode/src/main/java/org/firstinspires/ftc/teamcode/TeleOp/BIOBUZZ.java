@@ -9,37 +9,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Core.DriveTrain;
 
-/**
- * Test_TeleOp - Biobuzz FTC Redesign (Dual Controller System)
- *
- * DRIVER A (Gamepad 1):
- * - Right Stick Y: Drive Forward / Backward (Push UP = Forward)
- * - Right Stick X: Strafe Left / Right (Push LEFT = Strafe Left)
- * - Left Stick X: Turn Left / Right (Push LEFT = Turn Left)
- * - Right Bumper: 100% Full Speed | Button B: 40% Precision Slow Mode
- *
- * DRIVER B (Gamepad 2):
- * - Right Stick Y / Left Stick Y: Launcher Flywheels (60% Max Speed Capped, Reversed Direction)
- * - Button B / Button X: Shoot Launchers at 60% Max Speed
- * - Button A / Button Y: Intake Motor (A = In, Y = Out / Unjam)
- * - Both Pusher Servos & Splitter Servo: CONSTANTLY spinning at 100% full power in opposite direction the second TeleOp starts
- *   (Hold Right/Left Bumper to temporarily reverse pushers if unjamming)
- */
-@TeleOp(name="Test_TeleOp", group="Test")
-public class Test_TeleOp extends LinearOpMode {
-
-    // ── 1. DRIVETRAIN (Core Object) ─────────────────────────────────────
+@TeleOp(name="BIOBUZZ", group="TeleOp")
+public class BIOBUZZ extends LinearOpMode {
     public DriveTrain driveTrain;
-
-    // ── 2. MECHANISM MOTORS (3 Motors) ───────────────────────────────────
-    public DcMotorEx rightLauncher;   // Control Hub Port 0: "rightlauncher"
-    public DcMotorEx leftLauncher;    // Control Hub Port 1: "leftlauncher"
-    public DcMotor frontIntake;       // Expansion Hub 2 Port 0: "frontintake"
-
-    // ── 3. CONTINUOUS ROTATION SERVOS (3 Servos) ──────────────────────────
-    public CRServo splitterServo;     // Control Hub Servo Port 5: "splitterservo"
-    public CRServo rightPusherServo;  // Expansion Hub 2 Servo Port 0: "rightpush"
-    public CRServo leftPusherServo;   // Control Hub Servo Port 0: "leftpush"
+    public DcMotorEx rightLauncher;
+    public DcMotorEx leftLauncher;
+    public DcMotorEx frontIntake;
+    public CRServo splitterServo;
+    public CRServo rightPusherServo;
+    public CRServo leftPusherServo;
 
     // Launcher Flywheel Speed (70% Speed)
     private static final double LAUNCHER_MAX_POWER = 0.70;
@@ -60,8 +38,8 @@ public class Test_TeleOp extends LinearOpMode {
         leftLauncher = getDeviceSafe(DcMotorEx.class, "leftlauncher");
         if (leftLauncher == null) leftLauncher = getDeviceSafe(DcMotorEx.class, "leftLauncher");
 
-        frontIntake = getDeviceSafe(DcMotor.class, "frontintake");
-        if (frontIntake == null) frontIntake = getDeviceSafe(DcMotor.class, "FrontIntake");
+        frontIntake = getDeviceSafe(DcMotorEx.class, "frontintake");
+        if (frontIntake == null) frontIntake = getDeviceSafe(DcMotorEx.class, "FrontIntake");
 
         splitterServo    = getDeviceSafe(CRServo.class, "splitterservo"); // CH Servo Port 5
         rightPusherServo = getDeviceSafe(CRServo.class, "rightpush");     // EH2 Servo Port 0

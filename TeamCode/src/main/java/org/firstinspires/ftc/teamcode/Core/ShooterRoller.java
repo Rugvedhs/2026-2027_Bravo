@@ -1,16 +1,14 @@
 package org.firstinspires.ftc.teamcode.Core;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotor.RunMode;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class FlyWheel {
+public class ShooterRoller {
 
-    private DcMotorEx RightFlyWheel;
-    private DcMotorEx LeftFlyWheel;
+    private DcMotorEx RightShooterRoller;
+    private DcMotorEx LeftShooterRoller;
 
     private static final double TICKS_PER_REV = 103.8; // Motor encoder resolution
     private static final double DEADZONE = 0.08;
@@ -22,23 +20,23 @@ public class FlyWheel {
     double F = 0.8;
     double P = 1.0;
 
-    public FlyWheel(DcMotorEx RightFlyWheel, DcMotorEx LeftFlyWheel) {
-        this.RightFlyWheel = RightFlyWheel;
-        this.LeftFlyWheel  = LeftFlyWheel;
+    public ShooterRoller(DcMotorEx RightShooterRoller, DcMotorEx LeftShooterRoller) {
+        this.RightShooterRoller = RightShooterRoller;
+        this.LeftShooterRoller  = LeftShooterRoller;
     }
 
     public void init() {
-        if (RightFlyWheel != null) {
-            RightFlyWheel.setDirection(DcMotorSimple.Direction.REVERSE);
-            RightFlyWheel.setMode(RunMode.RUN_USING_ENCODER);
-            RightFlyWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            RightFlyWheel.setPower(0.0);
+        if (RightShooterRoller != null) {
+            RightShooterRoller.setDirection(DcMotorEx.Direction.REVERSE);
+            RightShooterRoller.setMode(RunMode.RUN_USING_ENCODER);
+            RightShooterRoller.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+            RightShooterRoller.setPower(0.0);
         }
-        if (LeftFlyWheel != null) {
-            LeftFlyWheel.setDirection(DcMotorSimple.Direction.FORWARD);
-            LeftFlyWheel.setMode(RunMode.RUN_USING_ENCODER);
-            LeftFlyWheel.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            LeftFlyWheel.setPower(0.0);
+        if (LeftShooterRoller != null) {
+            LeftShooterRoller.setDirection(DcMotorEx.Direction.FORWARD);
+            LeftShooterRoller.setMode(RunMode.RUN_USING_ENCODER);
+            LeftShooterRoller.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.FLOAT);
+            LeftShooterRoller.setPower(0.0);
         }
     }
 
@@ -80,25 +78,25 @@ public class FlyWheel {
     }
 
     public void setLeftVelocity(double ticksPerSec) {
-        if (LeftFlyWheel != null) {
-            LeftFlyWheel.setMode(RunMode.RUN_USING_ENCODER);
-            LeftFlyWheel.setVelocity(ticksPerSec);
+        if (LeftShooterRoller != null) {
+            LeftShooterRoller.setMode(RunMode.RUN_USING_ENCODER);
+            LeftShooterRoller.setVelocity(ticksPerSec);
         }
     }
 
     public void setRightVelocity(double ticksPerSec) {
-        if (RightFlyWheel != null) {
-            RightFlyWheel.setMode(RunMode.RUN_USING_ENCODER);
-            RightFlyWheel.setVelocity(ticksPerSec);
+        if (RightShooterRoller != null) {
+            RightShooterRoller.setMode(RunMode.RUN_USING_ENCODER);
+            RightShooterRoller.setVelocity(ticksPerSec);
         }
     }
 
     public void stopLeft() {
-        if (LeftFlyWheel != null) LeftFlyWheel.setPower(0.0);
+        if (LeftShooterRoller != null) LeftShooterRoller.setPower(0.0);
     }
 
     public void stopRight() {
-        if (RightFlyWheel != null) RightFlyWheel.setPower(0.0);
+        if (RightShooterRoller != null) RightShooterRoller.setPower(0.0);
     }
 
     public void stop() {
@@ -110,16 +108,16 @@ public class FlyWheel {
         return (rpm * TICKS_PER_REV) / 60.0;
     }
 
-    public void updateFlywheelChanges(Telemetry telemetry){
+    public void updateShooterRollerChanges(Telemetry telemetry){
         PIDFCoefficients pidf = new PIDFCoefficients(P, 0, 0, F);
 
-        if (RightFlyWheel != null) RightFlyWheel.setPIDFCoefficients(RunMode.RUN_USING_ENCODER, pidf);
-        if (LeftFlyWheel != null) LeftFlyWheel.setPIDFCoefficients(RunMode.RUN_USING_ENCODER, pidf);
+        if (RightShooterRoller != null) RightShooterRoller.setPIDFCoefficients(RunMode.RUN_USING_ENCODER, pidf);
+        if (LeftShooterRoller != null) LeftShooterRoller.setPIDFCoefficients(RunMode.RUN_USING_ENCODER, pidf);
     }
 
     public void getVelocityAndError(Telemetry telemetry){
-        double rightVel = RightFlyWheel != null ? Math.abs(RightFlyWheel.getVelocity()) : 0.0;
-        double leftVel  = LeftFlyWheel != null ? Math.abs(LeftFlyWheel.getVelocity()) : 0.0;
+        double rightVel = RightShooterRoller != null ? Math.abs(RightShooterRoller.getVelocity()) : 0.0;
+        double leftVel  = LeftShooterRoller != null ? Math.abs(LeftShooterRoller.getVelocity()) : 0.0;
         double currVelocity = (rightVel + leftVel) / 2.0;
         double targetVelocity = rpmToTicks(targetRPM);
 

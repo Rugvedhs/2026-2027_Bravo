@@ -20,48 +20,39 @@ public class BIOBUZZ extends LinearOpMode {
     public Pusher pusher;
     public Splitter splitter;
 
+    private static final float STICK_DEADZONE = 0.08f;
+    private long yPressedTime = 0;
+
     @Override
     public void runOpMode() {
 
         driveTrain = new DriveTrain(hardwareMap, "frontleftdri", "backleftdri", "frontrightdri", "backrightdri");
-
-        DcMotorEx RightShooter = getDeviceSafe(DcMotorEx.class, "RightLauncher", "RightLauncher");
-        DcMotorEx LeftShooter  = getDeviceSafe(DcMotorEx.class, "Leftlauncher", "LeftLauncher");
-        DcMotorEx FrontIntake  = getDeviceSafe(DcMotorEx.class, "FrontIntake", "frontintake");
-        CRServo LeftPusher     = getDeviceSafe(CRServo.class, "Leftpusher", "LeftPusher");
-        CRServo RightPusher    = getDeviceSafe(CRServo.class, "Rightpusher", "RightPusher");
-        CRServo Splitter  = getDeviceSafe(CRServo.class, "Splitter", "splitter");
-
-     //   launcherWheel = new LauncherWheel(hardwareMap.get(DcMotor.class, "LauncherWheel"));
-
-        shooterRoller = new ShooterRoller(RightShooter, LeftShooter);
-        frontIntake   = new FrontIntake(FrontIntake);
-        pusher        = new Pusher(LeftPusher, RightPusher);
-        splitter      = new Splitter(Splitter);
+        pusher = new Pusher(hardwareMap.get(CRServo.class, "leftpusher"), hardwareMap.get(CRServo.class, "rightFly"));
+        shooterRoller = new ShooterRoller(hardwareMap.get(DcMotorEx.class, "leftShooterRoller"), hardwareMap.get(DcMotorEx.class, "rightShooterRoller"));
+        frontIntake = new FrontIntake(hardwareMap.get(DcMotorEx.class, "FrontIntake"));
+        splitter = new Splitter(hardwareMap.get(CRServo.class, "Splitter"));
 
         shooterRoller.init();
         frontIntake.init();
         pusher.init();
         splitter.init();
 
-        telemetry.addData("Status", "Initialized - BIOBUZZ TeleOp");
+        telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
 
-        splitter.start();
-
         while (opModeIsActive()) {
             driveTrain.Drive(gamepad1);
+            splitter.start();
 
-
-            shooterRoller.update(gamepad2.left_stick_y, gamepad2.right_stick_y, gamepad2.b, gamepad2.x);
+            float leftStick  = applyDeadzone(gamepad2.left_stick_y, STICK_DEADZONE);
+            float rightStick = applyDeadzone(gamepad2.right_stick_y, STICK_DEADZONE);
+            shooterRoller.update(leftStick, rightStick, gamepad2.b, gamepad2.x);
             frontIntake.update(gamepad2.y, gamepad2.a);
-            boolean pushRight = gamepad2.right_bumper || gamepad2.right_trigger > 0.1;
-            boolean pushLeft  = gamepad2.left_bumper  || gamepad2.left_trigger > 0.1;
+            boolean pushRight =  gamepad2.right_trigger > 0.1;
+            boolean pushLeft  =  gamepad2.left_trigger > 0.1;
             pusher.update(pushRight, pushLeft);
-
-            telemetry.addData("Status", "Running BIOBUZZ");
             telemetry.update();
         }
 
@@ -71,14 +62,7 @@ public class BIOBUZZ extends LinearOpMode {
         if (pusher != null) pusher.stop();
         if (splitter != null) splitter.stop();
     }
-
-    private <T> T getDeviceSafe(Class<T> classId, String primaryName, String... fallbacks) {
-        if (primaryName != null) {
-            try { return hardwareMap.get(classId, primaryName); } catch (Exception ignored) {}
-        }
-        for (String name : fallbacks) {
-            try { return hardwareMap.get(classId, name); } catch (Exception ignored) {}
-        }
-        return null;
+    private float applyDeadzone(float val, float dz) {
+        return Math.abs(val) < dz ? 0.0f : val;
     }
 }

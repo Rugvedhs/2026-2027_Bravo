@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -42,14 +43,14 @@ public class Driver extends DriveTrain
         this.opMode = opMode;
 
         // KEEP DIRECTIONS EXACTLY AS YOU HAD THEM
-        super.MotorfR.setDirection(DcMotorEx.Direction.REVERSE);
-        super.MotorbR.setDirection(DcMotorEx.Direction.REVERSE);
-        super.MotorbL.setDirection(DcMotorEx.Direction.REVERSE);
-        super.MotorfL.setDirection(DcMotorEx.Direction.REVERSE);
+        super.MotorfR.setDirection(DcMotor.Direction.REVERSE);
+        super.MotorbR.setDirection(DcMotor.Direction.REVERSE);
+        super.MotorbL.setDirection(DcMotor.Direction.REVERSE);
+        super.MotorfL.setDirection(DcMotor.Direction.REVERSE);
 
         // Initialize encoders and ensure brake behavior for precise autonomous moves
         super.initEncoders();
-        super.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        super.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     /**
@@ -77,7 +78,7 @@ public class Driver extends DriveTrain
         super.Stop();
 
         // After a RUN_TO_POSITION operation, switch to RUN_USING_ENCODER so encoders remain active
-        super.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        super.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     private void wait_to_finish()
@@ -97,7 +98,7 @@ public class Driver extends DriveTrain
         super.MotorbR.setTargetPosition(BR_target);
         super.MotorbL.setTargetPosition(BL_target);
 
-        super.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        super.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         super.setPower(power);
 
         wait_to_finish();
@@ -135,7 +136,7 @@ public class Driver extends DriveTrain
         super.MotorbR.setTargetPosition(BR_target);
         super.MotorbL.setTargetPosition(BL_target);
 
-        super.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        super.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         super.setPower(power);
 
         wait_to_finish();
@@ -169,7 +170,7 @@ public class Driver extends DriveTrain
         super.MotorfL.setTargetPosition(FL_target);
         super.MotorfR.setTargetPosition(FR_target);
 
-        super.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        super.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         super.setPower(power);
 
         wait_to_finish();

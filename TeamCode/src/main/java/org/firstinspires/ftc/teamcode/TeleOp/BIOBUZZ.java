@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Core.DriveTrain;
@@ -16,10 +15,10 @@ import org.firstinspires.ftc.teamcode.Core.Splitter;
 public class BIOBUZZ extends LinearOpMode {
 
     public DriveTrain driveTrain;
-    public ShooterRoller ShooterRoller;
-    public FrontIntake FrontIntake;
-    public Pusher Pusher;
-    public Splitter Splitter;
+    public ShooterRoller shooterRoller;
+    public FrontIntake frontIntake;
+    public Pusher pusher;
+    public Splitter splitter;
 
     @Override
     public void runOpMode() {
@@ -33,44 +32,44 @@ public class BIOBUZZ extends LinearOpMode {
         CRServo RightPusher    = getDeviceSafe(CRServo.class, "Rightpusher", "RightPusher");
         CRServo Splitter  = getDeviceSafe(CRServo.class, "Splitter", "splitter");
 
-        launcherWheel = new LauncherWheel(hardwareMap.get(DcMotor.class, "LauncherWheel"));
+     //   launcherWheel = new LauncherWheel(hardwareMap.get(DcMotor.class, "LauncherWheel"));
 
-        ShooterRoller = new ShooterRoller(RightShooter, LeftShooter);
-        FrontIntake   = new FrontIntake(FrontIntake);
-        Pusher        = new Pusher(LeftPusher, RightPusher);
-        Splitter      = new Splitter(Splitter);
+        shooterRoller = new ShooterRoller(RightShooter, LeftShooter);
+        frontIntake   = new FrontIntake(FrontIntake);
+        pusher        = new Pusher(LeftPusher, RightPusher);
+        splitter      = new Splitter(Splitter);
 
-        ShooterRoller.init();
-        FrontIntake.init();
-        Pusher.init();
-        Splitter.init();
+        shooterRoller.init();
+        frontIntake.init();
+        pusher.init();
+        splitter.init();
 
         telemetry.addData("Status", "Initialized - BIOBUZZ TeleOp");
         telemetry.update();
 
         waitForStart();
 
-        Splitter.start();
+        splitter.start();
 
         while (opModeIsActive()) {
             driveTrain.Drive(gamepad1);
 
 
-            ShooterRoller.update(gamepad2.left_stick_y, gamepad2.right_stick_y, gamepad2.b, gamepad2.x);
-            FrontIntake.update(gamepad2.y, gamepad2.a);
+            shooterRoller.update(gamepad2.left_stick_y, gamepad2.right_stick_y, gamepad2.b, gamepad2.x);
+            frontIntake.update(gamepad2.y, gamepad2.a);
             boolean pushRight = gamepad2.right_bumper || gamepad2.right_trigger > 0.1;
             boolean pushLeft  = gamepad2.left_bumper  || gamepad2.left_trigger > 0.1;
-            Pusher.update(pushRight, pushLeft);
+            pusher.update(pushRight, pushLeft);
 
             telemetry.addData("Status", "Running BIOBUZZ");
             telemetry.update();
         }
 
         if (driveTrain != null) driveTrain.Stop();
-        if (ShooterRoller != null) ShooterRoller.stop();
-        if (FrontIntake != null) FrontIntake.stop();
-        if (Pusher != null) Pusher.stop();
-        if (Splitter != null) Splitter.stop();
+        if (shooterRoller != null) shooterRoller.stop();
+        if (frontIntake != null) frontIntake.stop();
+        if (pusher != null) pusher.stop();
+        if (splitter != null) splitter.stop();
     }
 
     private <T> T getDeviceSafe(Class<T> classId, String primaryName, String... fallbacks) {

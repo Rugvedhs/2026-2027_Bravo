@@ -31,5 +31,5 @@ public class Splitter {
 
     public boolean isRunning() {
         return Splitter != null && Splitter.getPower() != 0.0;
-    }
+    } // figure out if this is better than just ,setpower instead of the null statement same goes for the other 2
 }

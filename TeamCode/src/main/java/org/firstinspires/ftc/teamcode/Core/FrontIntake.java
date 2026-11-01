@@ -29,7 +29,7 @@ public class FrontIntake {
 
     public void stop() {
         if (FrontIntake != null) {
-            FrontIntake.setPower(0.0);
+            FrontIntake.setPower(0.0); // figure out if this is better than just ,setpower instead of the null statement same goes for the other 2
         }
     }
 }

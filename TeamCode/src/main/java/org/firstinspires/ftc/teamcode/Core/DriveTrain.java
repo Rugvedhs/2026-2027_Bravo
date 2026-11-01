@@ -15,8 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  */
 public class DriveTrain
 {
-    public DcMotorEx MotorfL, MotorbL;
-    public DcMotorEx MotorfR, MotorbR;
+    public DcMotorEx MotorfL, MotorbL, MotorfR, MotorbR;
 
     // Direction modifiers (1 or -1) in case a motor needs reversing for power calls
     // <-- LEFT MOTORS inverted to correct physical wiring (front & back left were spinning opposite)

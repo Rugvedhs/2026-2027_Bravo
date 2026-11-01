@@ -5,164 +5,81 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Core.DriveTrain;
+import org.firstinspires.ftc.teamcode.Core.ShooterRoller;
+import org.firstinspires.ftc.teamcode.Core.FrontIntake;
+import org.firstinspires.ftc.teamcode.Core.Pusher;
+import org.firstinspires.ftc.teamcode.Core.Splitter;
 
 @TeleOp(name="BIOBUZZ", group="TeleOp")
 public class BIOBUZZ extends LinearOpMode {
-    public DriveTrain driveTrain;
-    public DcMotorEx rightLauncher;
-    public DcMotorEx leftLauncher;
-    public DcMotorEx frontIntake;
-    public CRServo splitterServo;
-    public CRServo rightPusherServo;
-    public CRServo leftPusherServo;
 
-    // Launcher Flywheel Speed (70% Speed)
-    private static final double LAUNCHER_MAX_POWER = 0.70;
+    public DriveTrain driveTrain;
+    public ShooterRoller ShooterRoller;
+    public FrontIntake FrontIntake;
+    public Pusher Pusher;
+    public Splitter Splitter;
 
     @Override
     public void runOpMode() {
 
-        // ── HARDWARE INITIALIZATION ──
-        driveTrain = new DriveTrain(
-                hardwareMap,
-                "frontleftdri", "backleftdri",
-                "frontrightdri", "backrightdri"
-        );
+        driveTrain = new DriveTrain(hardwareMap, "frontleftdri", "backleftdri", "frontrightdri", "backrightdri");
 
-        rightLauncher = getDeviceSafe(DcMotorEx.class, "rightlauncher");
-        if (rightLauncher == null) rightLauncher = getDeviceSafe(DcMotorEx.class, "rightLauncher");
+        DcMotorEx RightShooter = getDeviceSafe(DcMotorEx.class, "RightLauncher", "RightLauncher");
+        DcMotorEx LeftShooter  = getDeviceSafe(DcMotorEx.class, "Leftlauncher", "LeftLauncher");
+        DcMotorEx FrontIntake  = getDeviceSafe(DcMotorEx.class, "FrontIntake", "frontintake");
+        CRServo LeftPusher     = getDeviceSafe(CRServo.class, "Leftpusher", "LeftPusher");
+        CRServo RightPusher    = getDeviceSafe(CRServo.class, "Rightpusher", "RightPusher");
+        CRServo Splitter  = getDeviceSafe(CRServo.class, "Splitter", "splitter");
 
-        leftLauncher = getDeviceSafe(DcMotorEx.class, "leftlauncher");
-        if (leftLauncher == null) leftLauncher = getDeviceSafe(DcMotorEx.class, "leftLauncher");
+        launcherWheel = new LauncherWheel(hardwareMap.get(DcMotor.class, "LauncherWheel"));
 
-        frontIntake = getDeviceSafe(DcMotorEx.class, "frontintake");
-        if (frontIntake == null) frontIntake = getDeviceSafe(DcMotorEx.class, "FrontIntake");
+        ShooterRoller = new ShooterRoller(RightShooter, LeftShooter);
+        FrontIntake   = new FrontIntake(FrontIntake);
+        Pusher        = new Pusher(LeftPusher, RightPusher);
+        Splitter      = new Splitter(Splitter);
 
-        splitterServo    = getDeviceSafe(CRServo.class, "splitterservo"); // CH Servo Port 5
-        rightPusherServo = getDeviceSafe(CRServo.class, "rightpush");     // EH2 Servo Port 0
-        leftPusherServo  = getDeviceSafe(CRServo.class, "leftpush");      // CH Servo Port 0
+        ShooterRoller.init();
+        FrontIntake.init();
+        Pusher.init();
+        Splitter.init();
 
-        // Launcher Flywheels: Reversed Directions + FLOAT for smooth coasting
-        if (rightLauncher != null) {
-            rightLauncher.setDirection(DcMotor.Direction.REVERSE); // Reversed as requested
-            rightLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            rightLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-        if (leftLauncher != null) {
-            leftLauncher.setDirection(DcMotor.Direction.FORWARD); // Reversed as requested
-            leftLauncher.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            leftLauncher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-
-        // Intake Motor & Servos
-        if (frontIntake != null) frontIntake.setDirection(DcMotorSimple.Direction.FORWARD);
-        if (splitterServo != null) splitterServo.setDirection(DcMotorSimple.Direction.REVERSE);  // CCW Conveying
-        
-        // Pusher Servos: Right Pusher set to FORWARD for continuous Clockwise (CW) spin at full power
-        if (rightPusherServo != null) rightPusherServo.setDirection(DcMotorSimple.Direction.FORWARD); // Clockwise (CW)
-        if (leftPusherServo != null) leftPusherServo.setDirection(DcMotorSimple.Direction.REVERSE);   // Counter-Clockwise (CCW)
-
-        // ── INITIAL TELEMETRY DISPLAY ──
-        telemetry.addData("Status", "Initialized - Test_TeleOp (70%% Launchers | Continuous Pushers)");
-        telemetry.addData("Driver A (Gamepad 1)", "RS Y = Forward/Back | RS X = Strafe | LS X = Turn | B = Slow Mode");
-        telemetry.addData("Driver B (Gamepad 2)", "Sticks = Launchers (70%% Max) | A/Y = Intake | Pushers & Splitter = CONSTANT 100%%");
+        telemetry.addData("Status", "Initialized - BIOBUZZ TeleOp");
         telemetry.update();
 
         waitForStart();
 
-        boolean isLeftLauncherOn = false;
-        boolean x2PreviouslyPressed = false;
+        Splitter.start();
 
         while (opModeIsActive()) {
-
-            // ──────────────────────────────────────────────────────────────────
-            // ── DRIVER A: DRIVETRAIN CONTROLS (Gamepad 1) ─────────────────────
-            // ──────────────────────────────────────────────────────────────────
             driveTrain.Drive(gamepad1);
 
-            // ──────────────────────────────────────────────────────────────────
-            // ── DRIVER B: MECHANISM CONTROLS (Gamepad 2) ──────────────────────
-            // ──────────────────────────────────────────────────────────────────
 
-            // 1. DUAL LAUNCHER MOTORS (70% Speed + Reversed Direction)
-            double rightLauncherPower = -gamepad2.right_stick_y * LAUNCHER_MAX_POWER;
-            double leftLauncherPower  = -gamepad2.left_stick_y * LAUNCHER_MAX_POWER;
+            ShooterRoller.update(gamepad2.left_stick_y, gamepad2.right_stick_y, gamepad2.b, gamepad2.x);
+            FrontIntake.update(gamepad2.y, gamepad2.a);
+            boolean pushRight = gamepad2.right_bumper || gamepad2.right_trigger > 0.1;
+            boolean pushLeft  = gamepad2.left_bumper  || gamepad2.left_trigger > 0.1;
+            Pusher.update(pushRight, pushLeft);
 
-            // Button B -> Shoot Right Launcher at 70% Speed
-            if (gamepad2.b) rightLauncherPower = LAUNCHER_MAX_POWER;
-            
-            // Button X (Gamepad 2) -> Press-to-Toggle Left Launcher ON / OFF until pressed again
-            boolean x2Pressed = gamepad2.x;
-            if (x2Pressed && !x2PreviouslyPressed) {
-                isLeftLauncherOn = !isLeftLauncherOn;
-            }
-            x2PreviouslyPressed = x2Pressed;
-
-            if (isLeftLauncherOn) {
-                leftLauncherPower = LAUNCHER_MAX_POWER; // Same speed as before (70% power)
-            }
-
-            if (rightLauncher != null) rightLauncher.setPower(rightLauncherPower);
-            if (leftLauncher != null) leftLauncher.setPower(leftLauncherPower);
-
-            // 2. INTAKE MOTOR CONTROL (Button Y = Intaking, Button A = Outtaking)
-            double intakePower = 0.0;
-            if (gamepad2.y) {
-                intakePower = 1.00;  // Button Y = Intaking
-            } else if (gamepad2.a) {
-                intakePower = -1.00; // Button A = Outtaking
-            }
-            if (frontIntake != null) frontIntake.setPower(intakePower);
-
-            // 3. SPLITTER CONVEYOR SERVO (Stopped by default)
-            double splitterPower = 0.0;
-            if (gamepad2.right_trigger > 0.1 || gamepad2.dpad_down) {
-                splitterPower = -1.00; // Spin on demand
-            }
-            if (splitterServo != null) splitterServo.setPower(splitterPower);
-
-            // 4. PUSHER SERVOS (Right Bumper on Gamepad 2)
-            double rightPushPower = 0.0;
-            double leftPushPower  = 0.0;
-
-            // Right Bumper / Right Trigger on Gamepad 2 -> Other direction (-1.00)
-            if (gamepad2.right_bumper || gamepad2.right_trigger > 0.1) {
-                rightPushPower = -1.00;
-                leftPushPower  = -1.00;
-            }
-
-            if (rightPusherServo != null) rightPusherServo.setPower(rightPushPower);
-            if (leftPusherServo != null) leftPusherServo.setPower(leftPushPower);
-
-            // ──────────────────────────────────────────────────────────────────
-            // ── DRIVER STATION TELEMETRY OUTPUT ──────────────────────────────
-            // ──────────────────────────────────────────────────────────────────
-            telemetry.addData(">> STATUS <<", "Running Test_TeleOp");
-            telemetry.addData("Driver A Speed", gamepad1.b ? "SLOW (40%%)" : "FULL POWER (100%%)");
-            telemetry.addData("Driver B Launchers (60%% Cap)", "Right: %.2f | Left: %.2f", rightLauncherPower, leftLauncherPower);
-            telemetry.addData("Driver B Pushers (Constant)", "Right: %.2f | Left: %.2f", rightPushPower, leftPushPower);
-            telemetry.addData("Driver B Intake", "Power: %.2f", intakePower);
+            telemetry.addData("Status", "Running BIOBUZZ");
             telemetry.update();
         }
 
-        // Safety Stop
         if (driveTrain != null) driveTrain.Stop();
-        if (rightLauncher != null) rightLauncher.setPower(0.0);
-        if (leftLauncher != null) leftLauncher.setPower(0.0);
-        if (frontIntake != null) frontIntake.setPower(0.0);
-        if (splitterServo != null) splitterServo.setPower(0.0);
-        if (rightPusherServo != null) rightPusherServo.setPower(0.0);
-        if (leftPusherServo != null) leftPusherServo.setPower(0.0);
+        if (ShooterRoller != null) ShooterRoller.stop();
+        if (FrontIntake != null) FrontIntake.stop();
+        if (Pusher != null) Pusher.stop();
+        if (Splitter != null) Splitter.stop();
     }
 
-    private <T> T getDeviceSafe(Class<T> classId, String deviceName) {
-        try {
-            return hardwareMap.get(classId, deviceName);
-        } catch (Exception ignored) {
-            return null;
+    private <T> T getDeviceSafe(Class<T> classId, String primaryName, String... fallbacks) {
+        if (primaryName != null) {
+            try { return hardwareMap.get(classId, primaryName); } catch (Exception ignored) {}
         }
+        for (String name : fallbacks) {
+            try { return hardwareMap.get(classId, name); } catch (Exception ignored) {}
+        }
+        return null;
     }
 }

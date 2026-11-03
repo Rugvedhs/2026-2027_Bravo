@@ -19,14 +19,14 @@ public class ShootingFar extends LinearOpMode
 
     @Override
     public void runOpMode() {
-//        driver = new Driver(hardwareMap);
         driver = new Driver(this, hardwareMap);
-        leftShooterRoller   = (hardwareMap.get(DcMotorEx.class, "BackBottom"));
-        rightShooterRoller   = (hardwareMap.get(DcMotorEx.class, "BackIntake"));
-        leftPusher = (hardwareMap.get(CRServo.class, "LeftBelt"));
-        rightPusher = (hardwareMap.get(CRServo.class, "RightBelt"));
-        frontIntake = (hardwareMap.get(DcMotorEx.class, "FrontIntake"));
-        splitter = (hardwareMap.get(CRServo.class, "FrontIntake"));
+        leftPusher   = (hardwareMap.get(CRServo.class, "leftPusher"));
+        rightPusher   = (hardwareMap.get(CRServo.class, "rightPusher"));
+        leftShooterRoller  = (hardwareMap.get(DcMotorEx.class, "leftShooterRoller"));
+        rightShooterRoller = (hardwareMap.get(DcMotorEx.class, "rightShooterRoller"));
+        frontIntake = (hardwareMap.get(DcMotorEx.class, "frontIntake"));
+        splitter = (hardwareMap.get(CRServo.class, "splitter"));
+
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();

@@ -26,11 +26,11 @@ public class BIOBUZZ extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        driveTrain = new DriveTrain(hardwareMap, "frontleftdri", "backleftdri", "frontrightdri", "backrightdri");
-        pusher = new Pusher(hardwareMap.get(CRServo.class, "leftpusher"), hardwareMap.get(CRServo.class, "rightFly"));
+        driveTrain = new DriveTrain(hardwareMap, "frontLeft", "backLeft", "frontRight", "backRight");
+        pusher = new Pusher(hardwareMap.get(CRServo.class, "leftPusher"), hardwareMap.get(CRServo.class, "rightPusher"));
         shooterRoller = new ShooterRoller(hardwareMap.get(DcMotorEx.class, "leftShooterRoller"), hardwareMap.get(DcMotorEx.class, "rightShooterRoller"));
-        frontIntake = new FrontIntake(hardwareMap.get(DcMotorEx.class, "FrontIntake"));
-        splitter = new Splitter(hardwareMap.get(CRServo.class, "Splitter"));
+        frontIntake = new FrontIntake(hardwareMap.get(DcMotorEx.class, "frontIntake"));
+        splitter = new Splitter(hardwareMap.get(CRServo.class, "splitter"));
 
         shooterRoller.init();
         frontIntake.init();

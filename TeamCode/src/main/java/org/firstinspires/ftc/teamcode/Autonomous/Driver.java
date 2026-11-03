@@ -18,8 +18,11 @@ public class Driver extends DriveTrain
     private static final long DEFAULT_MOVE_TIMEOUT_MS = 5000;
     public Driver(LinearOpMode opMode, HardwareMap map)
     {
-        super(map, "leftFront", "leftBack", "rightFront", "rightBack"); // figure out if here is where change the names
+        super(map, "frontLeft", "backLeft", "frontRight", "backRight"); // figure out if here is where change the names
         this.opMode = opMode;
+
+
+
 
         // KEEP DIRECTIONS EXACTLY AS YOU HAD THEM
         super.MotorfR.setDirection(DcMotor.Direction.REVERSE);

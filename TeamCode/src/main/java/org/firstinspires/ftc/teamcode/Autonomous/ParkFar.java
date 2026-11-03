@@ -20,12 +20,13 @@ public class ParkFar extends LinearOpMode
     @Override
     public void runOpMode() {
         driver = new Driver(this, hardwareMap);
-        leftShooterRoller   = (hardwareMap.get(DcMotorEx.class, "BackBottom"));
-        rightShooterRoller   = (hardwareMap.get(DcMotorEx.class, "BackIntake"));
-        leftPusher = (hardwareMap.get(CRServo.class, "LeftBelt"));
-        rightPusher = (hardwareMap.get(CRServo.class, "RightBelt"));
-        frontIntake = (hardwareMap.get(DcMotorEx.class, "FrontIntake"));
-        splitter = (hardwareMap.get(CRServo.class, "FrontIntake"));
+        leftPusher   = (hardwareMap.get(CRServo.class, "leftPusher"));
+        rightPusher   = (hardwareMap.get(CRServo.class, "rightPusher"));
+        leftShooterRoller  = (hardwareMap.get(DcMotorEx.class, "leftShooterRoller"));
+        rightShooterRoller = (hardwareMap.get(DcMotorEx.class, "rightShooterRoller"));
+        frontIntake = (hardwareMap.get(DcMotorEx.class, "frontIntake"));
+        splitter = (hardwareMap.get(CRServo.class, "splitter"));
+
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -36,12 +37,12 @@ public class ParkFar extends LinearOpMode
         if (opModeIsActive())
         {
             // this section puts the robot in position to shoot the 2 artifacts in the back intake
-            driver.forward_tiles(-0.4);
+            driver.strafe_tiles(-0.4);
             sleep(3000);
 //-------------------------------------------------------------------------------
             // this section turns on all the things needed to shoot the artifact in front intake
             sleep(6000);
-//--------------------------------------------------------------------------------------------------
+//------------------------------------------------------- -------------------------------------------
             // this section turns off all the parts to ensure nothing else happens that might give us penalty
 
 //--------------------------------------------------------------------------------------------------

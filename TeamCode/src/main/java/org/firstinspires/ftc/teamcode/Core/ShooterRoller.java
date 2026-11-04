@@ -14,7 +14,7 @@ public class ShooterRoller {
     private static final double DEADZONE = 0.08;
 
     // Target Max RPM capped at 70% max speed (6000 RPM * 0.70 = 4200 RPM)
-    public double targetRPM = 4200.0; 
+    public double targetRPM = -4200.0;
 
     // PIDF tuning values
     double F = 0.8;
@@ -113,19 +113,5 @@ public class ShooterRoller {
 
         if (RightShooterRoller != null) RightShooterRoller.setPIDFCoefficients(RunMode.RUN_USING_ENCODER, pidf);
         if (LeftShooterRoller != null) LeftShooterRoller.setPIDFCoefficients(RunMode.RUN_USING_ENCODER, pidf);
-    }
-
-    public void getVelocityAndError(Telemetry telemetry){
-        double rightVel = RightShooterRoller != null ? Math.abs(RightShooterRoller.getVelocity()) : 0.0;
-        double leftVel  = LeftShooterRoller != null ? Math.abs(LeftShooterRoller.getVelocity()) : 0.0;
-        double currVelocity = (rightVel + leftVel) / 2.0;
-        double targetVelocity = rpmToTicks(targetRPM);
-
-        telemetry.addData("Current Velocity", "%.1f", currVelocity);
-        telemetry.addData("Target Velocity", "%.1f", targetVelocity);
-        telemetry.addData("RPM Target", "%.0f", targetRPM);
-
-        double error = targetVelocity - currVelocity;
-        telemetry.addData("Error", "%.1f", error);
     }
 }

@@ -25,7 +25,7 @@ public class Pusher {
 
     public void update(boolean toggleRight, boolean toggleLeft) {
         if (RightPusher != null) {
-            RightPusher.setPower(toggleRight ? 1.0 : 0.0);
+            RightPusher.setPower(toggleRight ? -1.0 : 0.0);
         }
         if (LeftPusher != null) {
             LeftPusher.setPower(toggleLeft ? 1.0 : 0.0); // figure out if this is better than just ,setpower instead of the null statement same goes for the other 2

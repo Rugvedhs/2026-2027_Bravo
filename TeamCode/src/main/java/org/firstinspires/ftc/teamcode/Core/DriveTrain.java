@@ -2,11 +2,9 @@ package org.firstinspires.ftc.teamcode.Core;
 
 import androidx.annotation.NonNull;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
 /**
@@ -42,13 +40,13 @@ public class DriveTrain
         MotorbR = map.get(DcMotorEx.class, BR);
 
         // Default direction: if your physical wiring makes a wheel spin wrong way, reverse here.
-        setDirection(DcMotor.Direction.FORWARD);
+        setDirection(DcMotorEx.Direction.FORWARD); // FORWARD
 
         // Default to open-loop for teleop responsiveness
-        setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
 
         // Default zero power behavior: BRAKE makes autonomous moves stop more reliably.
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
 
         Stop();
     }
@@ -59,9 +57,9 @@ public class DriveTrain
     public void Drive(Gamepad gamepad)
     {
         // joystick axes: push up = negative on most controllers, so invert Y
-        double forward = -gamepad.left_stick_y;   // forward positive
-        double turn    =  gamepad.left_stick_x;   // right positive
-        double strafe  =  gamepad.right_stick_x;  // right positive
+        double forward = -gamepad.left_stick_x;   // forward positive
+        double turn    =  gamepad.right_stick_x;   // right positive // was postive and on y
+        double strafe  =  gamepad.right_stick_y;  // right positive
 
         // deadzone
         final double DZ = 0.3; // 0.08
@@ -77,6 +75,24 @@ public class DriveTrain
         double fr = forward - strafe - turn;
         double bl = forward - strafe + turn;
         double br = forward + strafe - turn;
+
+        /*
+                //currently as of 11/3
+        double fl = forward - strafe - turn;
+        double fr = forward + strafe + turn;
+        double bl = forward - strafe + turn;
+        double br = forward + strafe - turn;
+
+        this is the one where turning is on the right joystick
+         */
+        // the old code as of last year
+        /*
+        double fl = forward + strafe + turn;
+        double fr = forward - strafe - turn;
+        double bl = forward - strafe + turn;
+        double br = forward + strafe - turn;
+        * */
+
 
         // normalize
         double max = Math.abs(fl);
@@ -126,7 +142,7 @@ public class DriveTrain
         return normal;
     }
 
-    protected void setDirection(DcMotor.Direction direction)
+    protected void setDirection(DcMotorEx.Direction direction)
     {
         MotorfL.setDirection(direction);
         MotorbL.setDirection(direction);
@@ -139,9 +155,9 @@ public class DriveTrain
      */
     public void initEncoders()
     {
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
+        setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         encoders_initialized = true;
     }
 
@@ -197,7 +213,7 @@ public class DriveTrain
         MotorbR.setPower(power * MOTOR_bR_MODIFIER);
     }
 
-    public void setMode(DcMotor.RunMode mode)
+    public void setMode(DcMotorEx.RunMode mode)
     {
         MotorfL.setMode(mode);
         MotorbL.setMode(mode);
@@ -218,7 +234,7 @@ public class DriveTrain
         return MotorfL.isBusy() || MotorbL.isBusy() || MotorfR.isBusy() || MotorbR.isBusy();
     }
 
-    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior behavior)
+    public void setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior behavior)
     {
         MotorfL.setZeroPowerBehavior(behavior);
         MotorbL.setZeroPowerBehavior(behavior);
@@ -244,30 +260,6 @@ public class DriveTrain
         return (ticksPerSec / TICKS_PER_REV) * 60.0;
     }
 
-    /**
-     * Call this from TeleOp loop to see encoder positions + speeds for all 4 wheels.
-     */
-    public void addDriveTelemetry(Telemetry telemetry)
-    {
-
-        telemetry.addLine("---- Wheel Speed (ticks/sec) ----");
-        telemetry.addData("FL vel", "%.1f", getMotorFLVel());
-        telemetry.addData("FR vel", "%.1f", getMotorFRVel());
-        telemetry.addData("BL vel", "%.1f", getMotorBLVel());
-        telemetry.addData("BR vel", "%.1f", getMotorBRVel());
-
-        telemetry.addLine("---- Wheel Speed (RPM est) ----");
-        telemetry.addData("FL rpm", "%.1f", ticksPerSecToRPM(getMotorFLVel()));
-        telemetry.addData("FR rpm", "%.1f", ticksPerSecToRPM(getMotorFRVel()));
-        telemetry.addData("BL rpm", "%.1f", ticksPerSecToRPM(getMotorBLVel()));
-        telemetry.addData("BR rpm", "%.1f", ticksPerSecToRPM(getMotorBRVel()));
-
-        telemetry.addLine("---- Drive Encoders ----");
-        telemetry.addData("FL pos", getMotorFLPosition());
-        telemetry.addData("FR pos", getMotorFRPosition());
-        telemetry.addData("BL pos", getMotorBLPosition());
-        telemetry.addData("BR pos", getMotorBRPosition());
-
-    }
-
 }
+
+

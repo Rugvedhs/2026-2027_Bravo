@@ -21,7 +21,6 @@ public class BIOBUZZ extends LinearOpMode {
     public Splitter splitter;
 
     private static final float STICK_DEADZONE = 0.08f;
-    private long yPressedTime = 0;
 
     @Override
     public void runOpMode() {
@@ -37,7 +36,7 @@ public class BIOBUZZ extends LinearOpMode {
         pusher.init();
         splitter.init();
 
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized - BIOBUZZ");
         telemetry.update();
 
         waitForStart();
@@ -50,9 +49,12 @@ public class BIOBUZZ extends LinearOpMode {
             float rightStick = applyDeadzone(gamepad2.right_stick_y, STICK_DEADZONE);
             shooterRoller.update(leftStick, rightStick, gamepad2.b, gamepad2.x);
             frontIntake.update(gamepad2.y, gamepad2.a);
-            boolean pushRight =  gamepad2.right_trigger > 0.1;
-            boolean pushLeft  =  gamepad2.left_trigger > 0.1;
+            
+            boolean pushRight = gamepad2.right_trigger > 0.1 || gamepad2.right_bumper;
+            boolean pushLeft  = gamepad2.left_trigger > 0.1 || gamepad2.left_bumper;
             pusher.update(pushRight, pushLeft);
+
+            telemetry.addData("Status", "Running BIOBUZZ");
             telemetry.update();
         }
 
@@ -62,6 +64,7 @@ public class BIOBUZZ extends LinearOpMode {
         if (pusher != null) pusher.stop();
         if (splitter != null) splitter.stop();
     }
+
     private float applyDeadzone(float val, float dz) {
         return Math.abs(val) < dz ? 0.0f : val;
     }

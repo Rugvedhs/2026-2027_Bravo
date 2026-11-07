@@ -2,54 +2,29 @@ package org.firstinspires.ftc.teamcode.Autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 @Autonomous(name="ParkClose", group="Autonomous")
-public class ParkClose extends LinearOpMode
-{
-    Driver driver;
-    public DcMotorEx leftShooterRoller;
-    public DcMotorEx rightShooterRoller;
-    public DcMotorEx frontIntake;
-    public CRServo leftPusher;
-    public CRServo rightPusher;
-    public CRServo splitter;
+public class ParkClose extends LinearOpMode {
 
+    private Driver driver;
 
     @Override
     public void runOpMode() {
         driver = new Driver(this, hardwareMap);
-        leftPusher   = (hardwareMap.get(CRServo.class, "leftPusher"));
-        rightPusher   = (hardwareMap.get(CRServo.class, "rightPusher"));
-        leftShooterRoller  = (hardwareMap.get(DcMotorEx.class, "leftShooterRoller"));
-        rightShooterRoller = (hardwareMap.get(DcMotorEx.class, "rightShooterRoller"));
-        frontIntake = (hardwareMap.get(DcMotorEx.class, "frontIntake"));
-        splitter = (hardwareMap.get(CRServo.class, "splitter"));
 
-        telemetry.addData("Status", "Initialized");
+        telemetry.addData("Status", "Initialized - ParkClose");
         telemetry.update();
-
 
         waitForStart();
 
-        if (opModeIsActive())
-        {
-            // this section puts the robot in position to shoot the 2 artifacts in the back intake
-            driver.forward_tiles(-0.4);
-            sleep(3000);
-//-------------------------------------------------------------------------------
-            // this section turns on all the things needed to shoot the artifact in front intake
-            sleep(6000);
-//--------------------------------------------------------------------------------------------------
-            // this section turns off all the parts to ensure nothing else happens that might give us penalty
+        if (opModeIsActive()) {
+            telemetry.addData("Step", "Driving to Close Park Zone");
+            telemetry.update();
 
-//--------------------------------------------------------------------------------------------------
-            // this section moves the robot out of the launch zone to get move points
-            driver.turn_ticks(390,1);
-            driver.forward_tiles(0.4,1.0);
-            driver.strafe_tiles(-0.8,1.0);
+            driver.forward_tiles(1.0, 0.8); // Drive Forward 1 tile into Close Park Zone
+
+            telemetry.addData("Status", "ParkClose Complete");
+            telemetry.update();
         }
-
     }
 }
